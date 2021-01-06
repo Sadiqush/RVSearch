@@ -7,6 +7,7 @@ def get_video(url):
     """Does all the process related to download and saving."""
     _forbid_playlist(url)
     video = download(url)
+    # TODO: save video
 
 
 def save_video(file):
