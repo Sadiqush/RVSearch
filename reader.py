@@ -15,5 +15,5 @@ def read_csv(inpath):
     """Reads the parts of the csv file and returns them."""
     df = _load_csv(inpath)
     source = df["source"]
-    target = df["target"].tolist()
-    return source, target
+    targets = df["target"].tolist()
+    return source, targets
