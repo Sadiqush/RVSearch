@@ -6,11 +6,12 @@ from downloader import get_video
 def get_frames(vid_path):
     vid = cv2.VideoCapture(vid_path)
     total_frames = vid.get(7)
-    for i in range(0, int(total_frames)):
+    for i in range(1, int(total_frames)):
         vid.set(1, i)
-        ret, still = vid.read()
-        cv2.imwrite(f'{vid_path}_frame{i}.jpg', still)
+        ret, frame = vid.read()
+        cv2.imwrite(f'{vid_path}_frame{i}.jpg', frame)
         print(f'Frame {i+1} saved.')
+        # break
     return None
 
 
