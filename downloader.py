@@ -6,8 +6,7 @@ import youtube_dl
 def get_video(url):
     """Does all the process related to download and saving."""
     _forbid_playlist(url)
-    video = download(url)
-    # TODO: save video
+    resp = download(url)
 
 
 def save_video(file):
@@ -19,11 +18,23 @@ def download(url):
     ydl_opts = {
         'outtmpl': '%(id)s.%(title)s.%(ext)s',
         'format': 'bestvideo[height<=480]',   # Best video, but no better than 480p
+        'logger': MyLogger(),
         'progress_hooks': [_progress]
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        video = ydl.download([url])
-    return video
+        response = ydl.download([url])
+    return response
+
+
+class MyLogger(object):
+    def debug(self, msg):
+        print(msg)
+
+    def warning(self, msg):
+        pass
+
+    def error(self, msg):
+        print(msg)
 
 
 def _progress(d):
@@ -40,3 +51,8 @@ def _forbid_playlist(ydl, url):
     if 'entries' in result:
         raise Exception("Please provide a single video URL.")
     return None
+
+
+if __name__ == '__main__':
+    response = download('https://www.youtube.com/watch?v=GpVXn7vswOM')
+    print(response)
