@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import youtube_dl
 
 
@@ -8,10 +6,6 @@ def get_video(url):
     name = _get_info(url)
     response = download(url)
     return name
-
-
-def save_video(file):
-    Path("tmp/").mkdir(parents=True, exist_ok=True)
 
 
 def download(url):
@@ -29,8 +23,8 @@ def download(url):
 
 class MyLogger(object):
     def debug(self, msg):
-        # print(msg)
-        pass
+        print(msg)
+        # pass
 
     def warning(self, msg):
         pass
