@@ -5,8 +5,9 @@ import youtube_dl
 
 def get_video(url):
     """Does all the process related to download and saving."""
-    _forbid_playlist(url)
-    resp = download(url)
+    name = _get_info(url)
+    response = download(url)
+    return name
 
 
 def save_video(file):
@@ -16,7 +17,7 @@ def save_video(file):
 def download(url):
     """Downloads a no-audio mp4 from youtube."""
     ydl_opts = {
-        'outtmpl': '%(id)s.%(title)s.%(ext)s',
+        'outtmpl': '%(id)s.%(ext)s',
         'format': 'bestvideo[height<=480]',   # Best video, but no better than 480p
         'logger': MyLogger(),
         'progress_hooks': [_progress]
@@ -28,7 +29,8 @@ def download(url):
 
 class MyLogger(object):
     def debug(self, msg):
-        print(msg)
+        # print(msg)
+        pass
 
     def warning(self, msg):
         pass
@@ -43,16 +45,18 @@ def _progress(d):
         print('Done downloading.')
 
 
-def _forbid_playlist(ydl, url):
-    """If the URL is a playlist, fuck 'em."""
-    with youtube_dl.YoutubeDL() as ydl:
+def _get_info(url):
+    """Get video's information. Also, if the URL is a playlist, fuck 'em."""
+    with youtube_dl.YoutubeDL({'logger': MyLogger()}) as ydl:
         result = ydl.extract_info(url, download=False)
+        name = result['id']
 
     if 'entries' in result:
         raise Exception("Please provide a single video URL.")
-    return None
+
+    return name + '.mp4'
 
 
 if __name__ == '__main__':
-    response = download('https://www.youtube.com/watch?v=GpVXn7vswOM')
-    print(response)
+    name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
+    print(name)
