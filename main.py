@@ -6,6 +6,7 @@ from downloader import get_video
 
 
 def change_path():
+    """Change working directory to a temporary directory."""
     Path("tmp/").mkdir(parents=True, exist_ok=True)
     chdir(getcwd() + "/tmp")
 

@@ -22,6 +22,7 @@ def download(url):
 
 
 class MyLogger(object):
+    """Logs downloading infos on stdout."""
     def debug(self, msg):
         print(msg)
         # pass
