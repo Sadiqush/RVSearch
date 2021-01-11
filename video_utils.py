@@ -38,9 +38,10 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
                  multichannel=True,
                  gaussian_weights=True, sigma=1.5,
                  use_sample_covariance=False)
-    psnr = cv2.PSNR(img1, img2)
-    nrmse_score = 1 - n_rmse(img1, img2)
     if debug:
+        psnr = cv2.PSNR(img1, img2)
+        nrmse_score = 1 - n_rmse(img1, img2)
+
         print("SSIM: {}".format(score))
         print('PSNR: ', psnr)
         print('NRMSE: ', nrmse_score)
