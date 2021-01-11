@@ -12,7 +12,7 @@ def download(url):
     """Downloads a no-audio mp4 from youtube."""
     ydl_opts = {
         'outtmpl': '%(id)s.%(ext)s',
-        'format': 'bestvideo[height<=480]',   # Best video, but no better than 480p
+        'format': 'bestvideo[height<=240][ext=mp4]',   # Best video, but no better than 480p
         'logger': MyLogger(),
         'progress_hooks': [_progress]
     }
