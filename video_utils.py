@@ -66,7 +66,7 @@ def _hasher(img, hash_len):
     return ih.phash(image, hash_len)
 
 
-def compare_hash_frames(frame_0, frame_1, hash_len=8):
+def compare_hash_frames(frame_0, frame_1, hash_len=24):
     h0, h1 = _hasher(frame_0, hash_len), _hasher(frame_1, hash_len)
     hl = hash_len ** 2
     dif = abs(h0 - h1)
@@ -112,18 +112,22 @@ if __name__ == "__main__":
     # TODO: GPU accelrate
     change_path()
     # video_name_2 = get_video("https://www.youtube.com/watch?v=-XgD-pUFKaI")
-    # video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
-    # get_the_frame(video1[1], video1[0], 300)
-    video = load_video("GpVXn7vswOM.mp4")
-    # frame = get_the_frame(video[1], 151)
-    # cv2.imwrite(f'{video[0]}_151.jpg', frame)
-    # start = time()
-    compare_frames(get_the_frame(video[1], 10),
-                   get_the_frame(video[1], 300),
-                   debug=True)
-    # print(f'it took {time() - start} seconds.')
+    video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
     # video_name_1 = get_video("https://www.youtube.com/watch?v=zTMjucCj590")
     # video_name_2 = get_video("https://www.youtube.com/watch?v=foYWdyACCHE")
+    #
+    # ----Precision Testing
+    video = load_video("GpVXn7vswOM.mp4")
+    frame_n = 250
+    frame = get_the_frame(video[1], frame_n)
+    cv2.imwrite(f'{video[0]}_{frame_n}.jpg', frame)
+    # start = time()
+    compare_frames(get_the_frame(video[1], 250),
+                   get_the_frame(video[1], 350),
+                   debug=True)
+    # print(f'it took {time() - start} seconds.')
+    #
+    # ----Time testing
     # video1 = load_video("GpVXn7vswOM.mp4")
     # video2 = load_video(video_name_2)
     # get_the_frame("TwIvUbOhcKE.mp4", 100)
