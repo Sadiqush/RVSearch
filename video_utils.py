@@ -28,20 +28,28 @@ def get_the_frame(vid_path, frm_n):
     return None
 
 
-def compare_frames(image_a, image_b, gray=True):
+def compare_frames(image_a, image_b, gray=True, debug=False):
     img1 = cv2.imread(image_a)
     img2 = cv2.imread(image_b)
     if gray:
         img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
         img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
     score = ssim(img1, img2,
-                                  multichannel=True,
-                                  gaussian_weights=True, sigma=1.5,
-                                  use_sample_covariance=False)
+                 multichannel=True,
+                 gaussian_weights=True, sigma=1.5,
+                 use_sample_covariance=False)
     mse_score = mean_squared_error(img1, img2)
-    print("SSIM: {}".format(score))
-    print("MSE: {}".format(mse_score))
+    if debug:
+        print("SSIM: {}".format(score))
+        print("MSE: {}".format(mse_score))
     return score
+
+
+def check_score(score, threshold=0.65):
+    if score >= threshold:
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
@@ -51,4 +59,5 @@ if __name__ == "__main__":
     # get_the_frame(video_name, 300)
     # get_the_frame(video_name_2, 50)
     compare_frames('GpVXn7vswOM.mp4_frame10.jpg',
-                   'GpVXn7vswOM.mp4_frame150.jpg')
+                   'GpVXn7vswOM.mp4_frame150.jpg',
+                   debug=True)
