@@ -6,26 +6,26 @@ from downloader import get_video
 from main import change_path
 
 
-def get_frames(vid_path):
+def read_video(vid_path):
     vid = cv2.VideoCapture(vid_path)
+    get_frames(vid, vid_path)
+    vid.release()
+    return None
+
+
+def get_frames(vid, vid_name):
     total_frames = vid.get(7)
     for i in range(1, int(total_frames), 30):  # 30fps is 30 frames per second.
-        vid.set(1, i)
-        ret, frame = vid.read()
-        cv2.imwrite(f'{vid_path}_frame{i}.jpg', frame)
-        print(f'Frame {i + 1} saved.')
-    vid.release()
+        get_the_frame(vid, vid_name, i)
     return None
 
 
-def get_the_frame(vid_path, frm_n):
-    vid = cv2.VideoCapture(vid_path)
+def get_the_frame(vid, vid_name, frm_n):
     vid.set(1, frm_n)
     ret, frame = vid.read()
-    cv2.imwrite(f'{vid_path}_frame{frm_n}.jpg', frame)
+    cv2.imwrite(f'{vid_name}_frame{frm_n}.jpg', frame)
     print(f'Frame {frm_n} saved.')
-    vid.release()
-    return None
+    return frame
 
 
 def compare_frames(image_a, image_b, gray=True, debug=False):
