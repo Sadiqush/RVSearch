@@ -23,21 +23,23 @@ def compare_videos(vid1, vid2):
 
     source_frames = []
     target_frames = []
+
     for i in range(1, int(tot_fr_1), 30):
         frame_1 = get_the_frame(vid1, i)
         source_frames.append(frame_1)
     for j in range(1, int(tot_fr_2), 30):
         frame_2 = get_the_frame(vid2, j)
         target_frames.append(frame_2)
-
+    start = time()
     for s_frame in source_frames:
         for t_frame in source_frames:
             # score = compare_frames(s_frame, t_frame)
             score = compare_hash_frames(s_frame, t_frame)
-            print(score)
+            # print(score)
             if check_score(score):
                 print(f'{vid1_name}_ is similar to {vid2_name}_')
                 break  # First similarity in video, break
+    print("--- %s seconds ---" % (time() - start))
 
 
 def load_video(vid_path):
@@ -63,10 +65,12 @@ def get_the_frame(vid, frm_n):
 
 def _hasher(img, hash_len):
     image = Image.fromarray(img)
-    return ih.phash(image, hash_len)
+    # hashed = ih.phash(image, hash_len)
+    hashed = ih.dhash(image, hash_len)
+    return hashed
 
 
-def compare_hash_frames(frame_0, frame_1, hash_len=24):
+def compare_hash_frames(frame_0, frame_1, hash_len=8):
     h0, h1 = _hasher(frame_0, hash_len), _hasher(frame_1, hash_len)
     hl = hash_len ** 2
     dif = abs(h0 - h1)
@@ -81,11 +85,11 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     if gray:
         image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
         image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
-    score = ssim(image_a, image_b,
-                 multichannel=True,
-                 # gaussian_weights=True, sigma=1.5,
-                 use_sample_covariance=False)
-    # score = 1 - n_rmse(image_a, image_b)
+    # score = ssim(image_a, image_b,
+    #              multichannel=True,
+    #              # gaussian_weights=True, sigma=1.5,
+    #              use_sample_covariance=False)
+    score = 1 - n_rmse(image_a, image_b)
     if debug:
         # Some other scores, print everything.
         phash_score = compare_hash_frames(image_a, image_b)
@@ -112,25 +116,24 @@ if __name__ == "__main__":
     # TODO: GPU accelrate
     change_path()
     # video_name_2 = get_video("https://www.youtube.com/watch?v=-XgD-pUFKaI")
-    video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
+    # video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
     # video_name_1 = get_video("https://www.youtube.com/watch?v=zTMjucCj590")
     # video_name_2 = get_video("https://www.youtube.com/watch?v=foYWdyACCHE")
     #
     # ----Precision Testing
-    video = load_video("GpVXn7vswOM.mp4")
-    frame_n = 250
-    frame = get_the_frame(video[1], frame_n)
-    cv2.imwrite(f'{video[0]}_{frame_n}.jpg', frame)
-    # start = time()
-    compare_frames(get_the_frame(video[1], 250),
-                   get_the_frame(video[1], 350),
-                   debug=True)
+    # video = load_video("GpVXn7vswOM.mp4")
+    # frame_n = 250
+    # frame = get_the_frame(video[1], frame_n)
+    # cv2.imwrite(f'{video[0]}_{frame_n}.jpg', frame)
+    # # start = time()
+    # compare_frames(get_the_frame(video[1], 250),
+    #                get_the_frame(video[1], 350),
+    #                debug=True)
     # print(f'it took {time() - start} seconds.')
     #
     # ----Time testing
-    # video1 = load_video("GpVXn7vswOM.mp4")
-    # video2 = load_video(video_name_2)
-    # get_the_frame("TwIvUbOhcKE.mp4", 100)
+    video_name = get_video("https://www.youtube.com/watch?v=TwIvUbOhcKE")
+    video1 = load_video(video_name)
     # start = time()
-    # compare_videos(video1, video1)
+    compare_videos(video1, video1)
     # print("--- %s seconds ---" % (time() - start))
