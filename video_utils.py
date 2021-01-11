@@ -81,17 +81,19 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     if gray:
         image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
         image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
-    # score = ssim(image_a, image_b,
-    #              multichannel=True,
-    #              # gaussian_weights=True, sigma=1.5,
-    #              use_sample_covariance=False)
-    score = 1 - n_rmse(image_a, image_b)
+    score = ssim(image_a, image_b,
+                 multichannel=True,
+                 # gaussian_weights=True, sigma=1.5,
+                 use_sample_covariance=False)
+    # score = 1 - n_rmse(image_a, image_b)
     if debug:
         # Some other scores, print everything.
+        phash_score = compare_hash_frames(image_a, image_b)
         psnr = cv2.PSNR(image_a, image_b)
         nrmse_score = 1 - n_rmse(image_a, image_b)
 
         print("SSIM: {}".format(score))
+        print("pHash: ", phash_score)
         print('PSNR: ', psnr)
         print('NRMSE: ', nrmse_score)
     return score
@@ -111,17 +113,20 @@ if __name__ == "__main__":
     change_path()
     # video_name_2 = get_video("https://www.youtube.com/watch?v=-XgD-pUFKaI")
     # video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
-    # video1 = load_video(video_name)
     # get_the_frame(video1[1], video1[0], 300)
-    # get_the_frame(video_name_2, 50)
-    # compare_frames('GpVXn7vswOM.mp4_frame151.jpg',
-    #                'GpVXn7vswOM.mp4_frame150.jpg',
-    #                debug=True)
+    video = load_video("GpVXn7vswOM.mp4")
+    # frame = get_the_frame(video[1], 151)
+    # cv2.imwrite(f'{video[0]}_151.jpg', frame)
+    # start = time()
+    compare_frames(get_the_frame(video[1], 10),
+                   get_the_frame(video[1], 300),
+                   debug=True)
+    # print(f'it took {time() - start} seconds.')
     # video_name_1 = get_video("https://www.youtube.com/watch?v=zTMjucCj590")
     # video_name_2 = get_video("https://www.youtube.com/watch?v=foYWdyACCHE")
-    video1 = load_video("GpVXn7vswOM.mp4")
+    # video1 = load_video("GpVXn7vswOM.mp4")
     # video2 = load_video(video_name_2)
     # get_the_frame("TwIvUbOhcKE.mp4", 100)
-    start = time()
-    compare_videos(video1, video1)
-    print("--- %s seconds ---" % (time() - start))
+    # start = time()
+    # compare_videos(video1, video1)
+    # print("--- %s seconds ---" % (time() - start))
