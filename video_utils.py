@@ -1,6 +1,6 @@
 import cv2
 from skimage.metrics import structural_similarity as ssim
-from skimage.metrics import mean_squared_error
+from skimage.metrics import normalized_root_mse as n_rmse
 
 from downloader import get_video
 from main import change_path
@@ -34,16 +34,16 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     if gray:
         img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
         img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-    psnr = cv2.PSNR(img1, img2)
     score = ssim(img1, img2,
                  multichannel=True,
                  gaussian_weights=True, sigma=1.5,
                  use_sample_covariance=False)
-    mse_score = mean_squared_error(img1, img2)
+    psnr = cv2.PSNR(img1, img2)
+    nrmse_score = 1 - n_rmse(img1, img2)
     if debug:
-        print('PSNR: ', psnr)
         print("SSIM: {}".format(score))
-        print("MSE: {}".format(mse_score))
+        print('PSNR: ', psnr)
+        print('NRMSE: ', nrmse_score)
     return score
 
 
