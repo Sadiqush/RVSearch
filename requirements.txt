@@ -2,3 +2,6 @@ pandas~=1.2.0
 youtube_dl
 opencv-python~=4.5.1.48
 scikit-image~=0.18.1
+numpy~=1.19.5
+ImageHash~=4.2.0
+Pillow~=8.1.0
