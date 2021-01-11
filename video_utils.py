@@ -1,6 +1,8 @@
 from time import time
 
 import numpy as np
+from PIL import Image
+import imagehash as ih
 import cv2
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import normalized_root_mse as n_rmse
@@ -18,6 +20,7 @@ def compare_videos(vid1, vid2):
     vid2 = vid2[1]
     tot_fr_1 = vid1.get(7)
     tot_fr_2 = vid2.get(7)
+
     source_frames = []
     target_frames = []
     for i in range(1, int(tot_fr_1), 30):
@@ -26,9 +29,12 @@ def compare_videos(vid1, vid2):
     for j in range(1, int(tot_fr_2), 30):
         frame_2 = get_the_frame(vid2, j)
         target_frames.append(frame_2)
+
     for s_frame in source_frames:
         for t_frame in source_frames:
-            score = compare_frames(frame_1, frame_2)
+            # score = compare_frames(s_frame, t_frame)
+            score = compare_hash_frames(s_frame, t_frame)
+            print(score)
             if check_score(score):
                 print(f'{vid1_name}_ is similar to {vid2_name}_')
                 break  # First similarity in video, break
@@ -53,6 +59,19 @@ def get_the_frame(vid, frm_n):
     vid.set(1, frm_n)
     ret, frame = vid.read()
     return frame
+
+
+def _hasher(img, hash_len):
+    image = Image.fromarray(img)
+    return ih.phash(image, hash_len)
+
+
+def compare_hash_frames(frame_0, frame_1, hash_len=8):
+    h0, h1 = _hasher(frame_0, hash_len), _hasher(frame_1, hash_len)
+    hl = hash_len ** 2
+    dif = abs(h0 - h1)
+    # print(1 - dif / hl)
+    return 1 - dif / hl
 
 
 def compare_frames(image_a, image_b, gray=True, debug=False):
@@ -100,7 +119,7 @@ if __name__ == "__main__":
     #                debug=True)
     # video_name_1 = get_video("https://www.youtube.com/watch?v=zTMjucCj590")
     # video_name_2 = get_video("https://www.youtube.com/watch?v=foYWdyACCHE")
-    video1 = load_video("TwIvUbOhcKE.mp4")
+    video1 = load_video("GpVXn7vswOM.mp4")
     # video2 = load_video(video_name_2)
     # get_the_frame("TwIvUbOhcKE.mp4", 100)
     start = time()
