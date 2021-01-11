@@ -6,11 +6,22 @@ from downloader import get_video
 from main import change_path
 
 
-def read_video(vid_path):
+def compare_videos(vid1, vid2):
+    tot_fr_1 = vid1.get(7)
+    tot_fr_2 = vid2.get(7)
+    for i in range(1, int(tot_fr_1), 30):
+        frame_1 = get_the_frame(vid1, 'source', i)
+        for j in range(1, int(tot_fr_2), 30):
+            frame_2 = get_the_frame(vid2, 'target', j)
+            score = compare_frames(frame_1, frame_2)
+            if check_score(score):
+                print(f'source_{i} is similar to target_{j}')
+                break
+
+
+def load_video(vid_path):
     vid = cv2.VideoCapture(vid_path)
-    get_frames(vid, vid_path)
-    vid.release()
-    return None
+    return vid
 
 
 def get_frames(vid, vid_name):
@@ -25,7 +36,7 @@ def get_the_frame(vid, vid_name, frm_n):
     ret, frame = vid.read()
     cv2.imwrite(f'{vid_name}_frame{frm_n}.jpg', frame)
     print(f'Frame {frm_n} saved.')
-    return frame
+    return f'{vid_name}_frame{frm_n}.jpg'
 
 
 def compare_frames(image_a, image_b, gray=True, debug=False):
@@ -61,6 +72,11 @@ if __name__ == "__main__":
     # video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
     # get_the_frame(video_name, 300)
     # get_the_frame(video_name_2, 50)
-    compare_frames('GpVXn7vswOM.mp4_frame151.jpg',
-                   'GpVXn7vswOM.mp4_frame150.jpg',
-                   debug=True)
+    # compare_frames('GpVXn7vswOM.mp4_frame151.jpg',
+    #                'GpVXn7vswOM.mp4_frame150.jpg',
+    #                debug=True)
+    video_name_1 = get_video("https://www.youtube.com/watch?v=GpVXn7vswOM")
+    video_name_2 = get_video("https://www.youtube.com/watch?v=GpVXn7vswOM")
+    video1 = load_video(video_name_1)
+    video2 = load_video(video_name_2)
+    compare_videos(video1, video2)
