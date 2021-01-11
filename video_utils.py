@@ -1,5 +1,6 @@
 from time import time
 
+import numpy as np
 import cv2
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import normalized_root_mse as n_rmse
@@ -17,13 +18,19 @@ def compare_videos(vid1, vid2):
     vid2 = vid2[1]
     tot_fr_1 = vid1.get(7)
     tot_fr_2 = vid2.get(7)
+    source_frames = []
+    target_frames = []
     for i in range(1, int(tot_fr_1), 30):
-        frame_1 = get_the_frame(vid1, vid1_name, i)
-        for j in range(1, int(tot_fr_2), 30):
-            frame_2 = get_the_frame(vid2, vid2_name, j)
+        frame_1 = get_the_frame(vid1, i)
+        source_frames.append(frame_1)
+    for j in range(1, int(tot_fr_2), 30):
+        frame_2 = get_the_frame(vid2, j)
+        target_frames.append(frame_2)
+    for s_frame in source_frames:
+        for t_frame in source_frames:
             score = compare_frames(frame_1, frame_2)
             if check_score(score):
-                print(f'{vid1_name}_{i} is similar to {vid2_name}_{j}')
+                print(f'{vid1_name}_ is similar to {vid2_name}_')
                 break  # First similarity in video, break
 
 
@@ -55,10 +62,11 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     if gray:
         image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
         image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
-    score = ssim(image_a, image_b,
-                 multichannel=True,
-                 gaussian_weights=True, sigma=1.5,
-                 use_sample_covariance=False)
+    # score = ssim(image_a, image_b,
+    #              multichannel=True,
+    #              # gaussian_weights=True, sigma=1.5,
+    #              use_sample_covariance=False)
+    score = 1 - n_rmse(image_a, image_b)
     if debug:
         # Some other scores, print everything.
         psnr = cv2.PSNR(image_a, image_b)
@@ -92,7 +100,7 @@ if __name__ == "__main__":
     #                debug=True)
     # video_name_1 = get_video("https://www.youtube.com/watch?v=zTMjucCj590")
     # video_name_2 = get_video("https://www.youtube.com/watch?v=foYWdyACCHE")
-    video1 = load_video("GpVXn7vswOM.mp4")
+    video1 = load_video("TwIvUbOhcKE.mp4")
     # video2 = load_video(video_name_2)
     # get_the_frame("TwIvUbOhcKE.mp4", 100)
     start = time()
