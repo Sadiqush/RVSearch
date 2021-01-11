@@ -34,12 +34,14 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     if gray:
         img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
         img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+    psnr = cv2.PSNR(img1, img2)
     score = ssim(img1, img2,
                  multichannel=True,
                  gaussian_weights=True, sigma=1.5,
                  use_sample_covariance=False)
     mse_score = mean_squared_error(img1, img2)
     if debug:
+        print('PSNR: ', psnr)
         print("SSIM: {}".format(score))
         print("MSE: {}".format(mse_score))
     return score
@@ -58,6 +60,6 @@ if __name__ == "__main__":
     # video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
     # get_the_frame(video_name, 300)
     # get_the_frame(video_name_2, 50)
-    compare_frames('GpVXn7vswOM.mp4_frame10.jpg',
+    compare_frames('GpVXn7vswOM.mp4_frame151.jpg',
                    'GpVXn7vswOM.mp4_frame150.jpg',
                    debug=True)
