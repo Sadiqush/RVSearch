@@ -7,21 +7,25 @@ from main import change_path
 
 
 def compare_videos(vid1, vid2):
+    vid1_name = vid1[0]
+    vid2_name = vid2[0]
+    vid1 = vid1[1]
+    vid2 = vid2[1]
     tot_fr_1 = vid1.get(7)
     tot_fr_2 = vid2.get(7)
     for i in range(1, int(tot_fr_1), 30):
-        frame_1 = get_the_frame(vid1, 'source', i)
+        frame_1 = get_the_frame(vid1, vid1_name, i)
         for j in range(1, int(tot_fr_2), 30):
-            frame_2 = get_the_frame(vid2, 'target', j)
+            frame_2 = get_the_frame(vid2, vid2_name, j)
             score = compare_frames(frame_1, frame_2)
             if check_score(score):
-                print(f'source_{i} is similar to target_{j}')
+                print(f'{vid1_name}_{i} is similar to {vid2_name}_{j}')
                 break
 
 
 def load_video(vid_path):
     vid = cv2.VideoCapture(vid_path)
-    return vid
+    return [vid_path, vid]
 
 
 def get_frames(vid, vid_name):
@@ -35,7 +39,7 @@ def get_the_frame(vid, vid_name, frm_n):
     vid.set(1, frm_n)
     ret, frame = vid.read()
     cv2.imwrite(f'{vid_name}_frame{frm_n}.jpg', frame)
-    print(f'Frame {frm_n} saved.')
+    # print(f'Frame {frm_n} saved.')
     return f'{vid_name}_frame{frm_n}.jpg'
 
 
