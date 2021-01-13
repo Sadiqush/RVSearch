@@ -7,8 +7,7 @@ import cv2
 from skimage.metrics import normalized_root_mse as n_rmse
 from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, ffprobe
-import numpy as np
-from skvideo.io import vread, ffprobe
+
 
 from downloader import get_video
 from main import change_path
