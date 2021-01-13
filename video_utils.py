@@ -4,8 +4,10 @@ import numpy as np
 from PIL import Image
 import imagehash as ih
 import cv2
-from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import normalized_root_mse as n_rmse
+from skimage.metrics import structural_similarity as ssim
+from skvideo.io import vread, ffprobe
+import numpy as np
 from skvideo.io import vread, ffprobe
 
 from downloader import get_video
@@ -57,13 +59,6 @@ def get_frames(vid, vid_name):
     return None
 
 
-def get_the_frame(vid, frm_n):
-    """Get the specified frame of a video object, write it on disk."""
-    vid.set(1, frm_n)
-    ret, frame = vid.read()
-    return frame
-
-
 def get_video_duration(filename: str) -> int:
     md = ffprobe(filename)['video']
     dur = md['@duration']
@@ -82,6 +77,13 @@ def get_video_as_array(filename: str, as_grey=False, fps=None) -> np.ndarray:
         fr = get_video_fps(filename) // fps
         return array[::fr]
     return array
+
+
+def get_the_frame(vid, vid_name, frm_n):
+    """Get the specified frame of a video object, write it on disk."""
+    vid.set(1, frm_n)
+    ret, frame = vid.read()
+    return frame
 
 
 def _hasher(img, hash_len):
@@ -138,23 +140,13 @@ if __name__ == "__main__":
     change_path()
     # video_name_2 = get_video("https://www.youtube.com/watch?v=-XgD-pUFKaI")
     # video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
-    # video_name_1 = get_video("https://www.youtube.com/watch?v=zTMjucCj590")
-    # video_name_2 = get_video("https://www.youtube.com/watch?v=foYWdyACCHE")
-    #
-    # ----Precision Testing
-    # video = load_video("GpVXn7vswOM.mp4")
-    # frame_n = 250
-    # frame = get_the_frame(video[1], frame_n)
-    # cv2.imwrite(f'{video[0]}_{frame_n}.jpg', frame)
-    # # start = time()
-    # compare_frames(get_the_frame(video[1], 250),
-    #                get_the_frame(video[1], 350),
+    # get_the_frame(video_name, 300)
+    # get_the_frame(video_name_2, 50)
+    # compare_frames('GpVXn7vswOM.mp4_frame151.jpg',
+    #                'GpVXn7vswOM.mp4_frame150.jpg',
     #                debug=True)
-    # print(f'it took {time() - start} seconds.')
-    #
-    # ----Time testing
-    video_name = get_video("https://www.youtube.com/watch?v=TwIvUbOhcKE")
-    video1 = load_video(video_name)
-    # start = time()
-    compare_videos(video1, video1)
-    # print("--- %s seconds ---" % (time() - start))
+    video_name_1 = get_video("https://www.youtube.com/watch?v=zTMjucCj590")
+    video_name_2 = get_video("https://www.youtube.com/watch?v=foYWdyACCHE")
+    video1 = load_video(video_name_1)
+    video2 = load_video(video_name_2)
+    compare_videos(video1, video2)
