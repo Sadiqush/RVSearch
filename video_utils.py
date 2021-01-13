@@ -8,32 +8,35 @@ from skimage.metrics import normalized_root_mse as n_rmse
 from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, ffprobe
 
-
 from downloader import get_video
 from main import change_path
+import csv_handle
 
 
 def compare_videos(vid1, vid2):
     """Get two video object, start comparing them frame by frame. Linear Search algorithm."""
-    print('start')
-    vid1_name = vid1[0]
-    vid2_name = vid2[0]
-    vid1 = vid1[1]
-    vid2 = vid2[1]
-    tot_fr_1 = vid1.get(7)
+    print('Getting ready...')
+    vid1, vid1_name, vid1_url = vid1[0], vid1[1], vid1[2]
+    vid2, vid2_name, vid2_url = vid2[0], vid2[1], vid2[2]
+    tot_fr_1 = vid1.get(7)   # Total number of frames of the video
     tot_fr_2 = vid2.get(7)
 
     source_frames = []
     target_frames = []
     target_fps = get_video_fps(vid2_name)
+    record_file = csv_handle.init_record_file()
 
+    # Save frames into RAM
     for i in range(1, int(tot_fr_1), 30):
         frame_1 = get_the_frame(vid1, i)
         source_frames.append(frame_1)
     for j in range(1, int(tot_fr_2), 30):
         frame_2 = get_the_frame(vid2, j)
         target_frames.append(frame_2)
+
+    # Start comparing
     start = time()
+    print('**Comparing started**')
     for s_frame in source_frames:
         for t_frame in source_frames:
             # score = compare_frames(s_frame, t_frame)
@@ -41,16 +44,19 @@ def compare_videos(vid1, vid2):
             if check_score(score):
                 # Record its timestamp
                 m, s = divmod((t_frame / target_fps), 60)
-                print(f'its at time: {m}:{s}')
-                print(f'{vid1_name}_ is similar to {vid2_name}_')
+                info = {'Source': f'{vid1_url}',
+                        'Target': f'{vid2_url}',
+                        'TimeStamp': f'{m}:{s}'}
+                record_file = record_similarity(record_file)
                 break  # First similarity in video, break
+
     print("--- %s seconds ---" % (time() - start))
 
 
 def load_video(vid_path):
     """Load the video object, return with its name."""
     vid = cv2.VideoCapture(vid_path)
-    return [vid_path, vid]
+    return [vid, vid_path, vid_url]
 
 
 def get_frames(vid, vid_name):
