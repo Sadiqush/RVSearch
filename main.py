@@ -12,6 +12,10 @@ def change_path():
 
 
 if __name__ == '__main__':
+    # TODO: read csv
+    # TODO: compare
+    # TODO: save
+
     csv_path = ""
     source, targets = read_csv(csv_path)
     source_vid = get_video(source)
