@@ -24,7 +24,8 @@ def init_record_file() -> pd.DataFrame:
     """Make the format for the final .csv file."""
     record_style = {'Source': '',
                     'Target': '',
-                    'TimeStamp': ''}
+                    'Source_TimeStamp': '',
+                    'Target_TimeStamp': ''}
     record_df = pd.DataFrame(record_style)
     return record_df
 

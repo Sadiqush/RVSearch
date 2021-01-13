@@ -23,7 +23,9 @@ def compare_videos(vid1, vid2):
 
     source_frames = []
     target_frames = []
+    source_fps = get_video_fps(vid1_name)
     target_fps = get_video_fps(vid2_name)
+
     record_file = csv_handle.init_record_file()
 
     # Save frames into RAM
@@ -43,10 +45,12 @@ def compare_videos(vid1, vid2):
             score = compare_hash_frames(s_frame, t_frame)
             if check_score(score):
                 # Record its timestamp
-                m, s = divmod((t_frame / target_fps), 60)
+                m1, s1 = divmod((t_frame / source_fps), 60)
+                m1, s2 = divmod((t_frame / target_fps), 60)
                 info = {'Source': f'{vid1_url}',
                         'Target': f'{vid2_url}',
-                        'TimeStamp': f'{m}:{s}'}
+                        'Source_TimeStamp': f'{m1}:{s1}',
+                        'Target_TimeStamp': f'{m2}:{s2}'}
                 record_file = record_similarity(record_file)
                 break  # First similarity in video, break
 
