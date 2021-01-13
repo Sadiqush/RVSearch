@@ -41,9 +41,10 @@ def _check_and_rename(file_name, add=0) -> str:
         return file_name
 
 
-def record_similarity(df: pd.DataFrame):
-    """When you find a similar video, save its information to a dataframe."""
-    pass
+def record_similarity(df: pd.DataFrame, data_dict: dict) -> pd.DataFrame:
+    """When you find a similar video, save its information to a dataframe then give it back."""
+    df = df.join(pd.DataFrame(data_dict, index=df.index))
+    return df
 
 
 def save_result(df: pd.DataFrame, csv_name: str):
