@@ -47,7 +47,7 @@ def record_similarity(df: pd.DataFrame, data_dict: dict) -> pd.DataFrame:
     return df
 
 
-def save_result(df: pd.DataFrame, csv_name: str):
+def save_csv(df: pd.DataFrame, csv_name: str):
     """Saves a dataframe to a .csv file with precautions."""
     csv_name = _check_and_rename(csv_name)
     df.to_csv(f'{csv_name}', index=true)
