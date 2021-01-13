@@ -25,6 +25,7 @@ def compare_videos(vid1, vid2):
 
     source_frames = []
     target_frames = []
+    target_fps = get_video_fps(vid2_name)
 
     for i in range(1, int(tot_fr_1), 30):
         frame_1 = get_the_frame(vid1, i)
@@ -37,8 +38,10 @@ def compare_videos(vid1, vid2):
         for t_frame in source_frames:
             # score = compare_frames(s_frame, t_frame)
             score = compare_hash_frames(s_frame, t_frame)
-            # print(score)
             if check_score(score):
+                # Record its timestamp
+                m, s = divmod((t_frame / target_fps), 60)
+                print(f'its at time: {m}:{s}')
                 print(f'{vid1_name}_ is similar to {vid2_name}_')
                 break  # First similarity in video, break
     print("--- %s seconds ---" % (time() - start))
@@ -62,6 +65,10 @@ def get_video_duration(filename: str) -> int:
     md = ffprobe(filename)['video']
     dur = md['@duration']
     return int(dur)
+
+
+def calculate_timestamp(n_frame, vid):
+    pass
 
 
 def get_video_fps(filename: str) -> int:
