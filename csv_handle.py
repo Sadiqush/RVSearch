@@ -21,6 +21,7 @@ def read_csv(inpath):
 
 
 def init_record_file() -> pd.DataFrame:
+    """Make the format for the final .csv file."""
     record_style = {'Source': '',
                     'Target': '',
                     'TimeStamp': ''}
@@ -28,9 +29,20 @@ def init_record_file() -> pd.DataFrame:
     return record_df
 
 
-def record_similarity(record_file: pd.DataFrame, csv_name: str):
-    if Path(csv_name).is_file():
-        record_file.to_csv(f'{csv_name}', index=true)
+def _check_and_rename(file_name, add=0) -> str:
+    """Used for rename duplicate files to avoid overwriting."""
+    if add != 0:
+        name_split = file.split(".")  # e.g.: .mp4
+        renamed = f"{split[0]}_({str(add)})"
+        file_name = ".".join([renamed, name_split[1]])
+    if Path(file_name).exists():
+        _check_and_rename(original_file, add=+1)
     else:
-        record_file.to_csv(f'{csv_name}', index=true)
+        return file_name
+
+
+def record_similarity(df: pd.DataFrame, csv_name: str):
+    """When you find a similar video, save its information to a .csv file"""
+    csv_name = _check_and_rename(csv_name)
+    df.to_csv(f'{csv_name}', index=true)
     return None
