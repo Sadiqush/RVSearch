@@ -6,6 +6,7 @@ import imagehash as ih
 import cv2
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import normalized_root_mse as n_rmse
+from skvideo.io import vread, ffprobe
 
 from downloader import get_video
 from main import change_path
@@ -61,6 +62,26 @@ def get_the_frame(vid, frm_n):
     vid.set(1, frm_n)
     ret, frame = vid.read()
     return frame
+
+
+def get_video_duration(filename: str) -> int:
+    md = ffprobe(filename)['video']
+    dur = md['@duration']
+    return int(dur)
+
+
+def get_video_fps(filename: str) -> int:
+    md = ffprobe(filename)['video']
+    fr, ps = md['@r_frame_rate'].split('/')
+    return int(fr) // int(ps)
+
+
+def get_video_as_array(filename: str, as_grey=False, fps=None) -> np.ndarray:
+    array = vread(filename, as_grey=as_grey)
+    if fps:
+        fr = get_video_fps(filename) // fps
+        return array[::fr]
+    return array
 
 
 def _hasher(img, hash_len):
