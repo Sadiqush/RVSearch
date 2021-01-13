@@ -51,6 +51,8 @@ def compare_videos(vid1, vid2):
                 break  # First similarity in video, break
 
     print("--- %s seconds ---" % (time() - start))
+    csv_handle.save_csv(record_file)
+    return None
 
 
 def load_video(vid_path):
