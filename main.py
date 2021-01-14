@@ -11,15 +11,27 @@ def change_path():
     chdir(getcwd() + "/tmp")
 
 
-def run(csv_path):
+def extract_urls(csv_path):
     change_path()
     compilation, sources = read_csv(csv_path)
-    compilation_info = get_video(compilation)
-    sources_info = [get_video(vid) for vid in sources]
-    compilation_vid = load_video(compilation_info)
-    source_vids = load_video(sources_info)
-    record_file = compare_videos(compilation_vid, source_vids)
-    csv_handle.save_csv(record_file)
+    compilation_list = [url for url in compilation]
+    source_list = [url for url in sources]
+    return compilation_list, source_list
+
+
+def run(csv_path):
+    compilation_list, source_list = extract_urls(csv_path)
+    for com_url in compilation_list:
+        for source_url in source_list:
+            compilation_info = get_video(com_url)
+            source_info = get_video(source_url)
+
+            compilation_vid = load_video(compilation_info)
+            source_vid = load_video(source_info)
+
+            record_file = compare_videos(compilation_vid, source_vid)
+
+            csv_handle.save_csv(record_file)
 
 
 if __name__ == '__main__':
