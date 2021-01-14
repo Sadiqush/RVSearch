@@ -26,16 +26,16 @@ def compare_videos(vid1, vid2):
     target_fps = get_video_fps(vid2_name)
 
     record_file = init_record_file()
-    print(f"Loading videos: {vid1_name}, {vid2_name}")
+
     # Save frames into RAM
+    print(f"Loading videos: {vid1_name}, {vid2_name}")
     for i in range(1, int(tot_fr_1), 30):
         frame_1 = get_the_frame(vid1, i)
         source_frames.append(frame_1)
     for j in range(1, int(tot_fr_2), 30):
         frame_2 = get_the_frame(vid2, j)
         target_frames.append(frame_2)
-    print('source length: ', len(source_frames))
-    print('target length: ', len(target_frames))
+
     # Start comparing
     current_frame_s = 0
     current_frame_t = 0
@@ -44,15 +44,12 @@ def compare_videos(vid1, vid2):
     for s_frame in source_frames:
         current_frame_s += 30
         current_frame_t = 0   # Reset
-        for t_frame in source_frames:
+        for t_frame in target_frames:
             current_frame_t += 30
             # score = compare_frames(s_frame, t_frame)
             score = compare_hash_frames(s_frame, t_frame)
-            print(score)
             if check_score(score):
                 # Record its timestamp
-                # cv2.imwrite(f'{vid1_name}_{current_frame_s}', s_frame)
-                cv2.imwrite(f'{vid2_name}_{current_frame_t}', t_frame)
                 m1, s1 = divmod((current_frame_s / 30), 60)
                 m2, s2 = divmod((current_frame_t / 30), 60)
                 info = {'Compilation': f'{vid1_url}',
@@ -156,7 +153,7 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     return score
 
 
-def check_score(score, threshold=0.90):
+def check_score(score, threshold=0.65):
     """Return True if similarity score reaches the threshold."""
     if score >= threshold:
         return True
@@ -176,8 +173,16 @@ if __name__ == "__main__":
     # compare_frames('GpVXn7vswOM.mp4_frame151.jpg',
     #                'GpVXn7vswOM.mp4_frame150.jpg',
     #                debug=True)
-    video_name_1 = get_video("https://www.youtube.com/watch?v=zTMjucCj590")
-    video_name_2 = get_video("https://www.youtube.com/watch?v=foYWdyACCHE")
-    video1 = load_video(video_name_1)
-    video2 = load_video(video_name_2)
-    compare_videos(video1, video2)
+
+    video1_info = get_video("https://www.youtube.com/watch?v=u-jvhik9Lwk")
+    video2_info = get_video("https://www.youtube.com/watch?v=_-uC9nkcd0w")
+    vid1, vid1_name, vid1_url = load_video(video1_info)
+    vid2, vid2_name, vid2_url = load_video(video2_info)
+    # compare_videos(vid1, vid2)
+    frame_n = 30
+    frame_1 = get_the_frame(vid1, frame_n)
+    frame_2 = get_the_frame(vid2, frame_n)
+    cv2.imwrite(f'{vid1_name}_{frame_n}.jpg', frame_1)
+    cv2.imwrite(f'{vid2_name}_{frame_n}.jpg', frame_2)
+    compare_frames(frame_1, frame_2, debug=True)
+    print(compare_hash_frames(frame_1, frame_2))
