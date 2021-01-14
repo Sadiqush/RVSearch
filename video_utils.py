@@ -47,8 +47,8 @@ def compare_videos(vid1, vid2):
         for t_frame in target_frames:
             current_frame_t += 30
             # score = compare_frames(s_frame, t_frame)
-            score = compare_hash_frames(s_frame, t_frame)
-            if check_score(score):
+            score = compare_hash_frames(s_frame, t_frame, hash_len=4)
+            if check_score(score, threshold=0.75):
                 # Record its timestamp
                 m1, s1 = divmod((current_frame_s / 30), 60)
                 m2, s2 = divmod((current_frame_t / 30), 60)
@@ -56,7 +56,7 @@ def compare_videos(vid1, vid2):
                         'Source': f'{vid2_url}',
                         'Com_TimeStamp': f'{int(m1)}:{int(s1)}',
                         'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
-                print(info)
+                print(info, score)
                 record_file = record_similarity(record_file, info)
                 break  # First similarity in video, break
 
@@ -93,9 +93,11 @@ def calculate_timestamp(n_frame, vid):
 
 
 def get_video_fps(filename: str) -> int:
-    md = ffprobe(filename)['video']
+    md: object = ffprobe(filename)['video']
+    print(type(md))
     fr, ps = md['@r_frame_rate'].split('/')
-    return int(fr) // int(ps)
+    fps = int(fr) / int(ps)
+    return round(fps, 2)
 
 
 def get_video_as_array(filename: str, as_grey=False, fps=None) -> np.ndarray:
@@ -142,7 +144,7 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     score = 1 - n_rmse(image_a, image_b)
     if debug:
         # Some other scores, print everything.
-        phash_score = compare_hash_frames(image_a, image_b)
+        phash_score = compare_hash_frames(image_a, image_b, hash_len=4)
         psnr = cv2.PSNR(image_a, image_b)
         nrmse_score = 1 - n_rmse(image_a, image_b)
 
@@ -153,7 +155,7 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     return score
 
 
-def check_score(score, threshold=0.65):
+def check_score(score, threshold=0.75):
     """Return True if similarity score reaches the threshold."""
     if score >= threshold:
         return True
@@ -174,15 +176,17 @@ if __name__ == "__main__":
     #                'GpVXn7vswOM.mp4_frame150.jpg',
     #                debug=True)
 
-    video1_info = get_video("https://www.youtube.com/watch?v=u-jvhik9Lwk")
-    video2_info = get_video("https://www.youtube.com/watch?v=_-uC9nkcd0w")
-    vid1, vid1_name, vid1_url = load_video(video1_info)
-    vid2, vid2_name, vid2_url = load_video(video2_info)
+    # video1_info = get_video("https://www.youtube.com/watch?v=u-jvhik9Lwk")
+    # video2_info = get_video("https://www.youtube.com/watch?v=_-uC9nkcd0w")
+    vid1, vid1_name, vid1_url = load_video(["u-jvhik9Lwk.mp4", "x"])
+    vid2, vid2_name, vid2_url = load_video(["_-uC9nkcd0w.mp4", "x"])
     # compare_videos(vid1, vid2)
+    print(get_video_fps("u-jvhik9Lwk.mp4"))
+    print(get_video_fps("_-uC9nkcd0w.mp4"))
     frame_n = 30
-    frame_1 = get_the_frame(vid1, frame_n)
-    frame_2 = get_the_frame(vid2, frame_n)
-    cv2.imwrite(f'{vid1_name}_{frame_n}.jpg', frame_1)
-    cv2.imwrite(f'{vid2_name}_{frame_n}.jpg', frame_2)
+    frame_1 = get_the_frame(vid1, 3500)
+    frame_2 = get_the_frame(vid2, 1104)
+    cv2.imwrite(f'{vid1_name}_1379.jpg', frame_1)
+    cv2.imwrite(f'{vid2_name}_1104.jpg', frame_2)
     compare_frames(frame_1, frame_2, debug=True)
     print(compare_hash_frames(frame_1, frame_2))
