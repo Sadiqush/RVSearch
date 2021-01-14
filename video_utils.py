@@ -9,7 +9,7 @@ from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, ffprobe
 
 from downloader import get_video
-from csv_handle import record_similarity
+from csv_handle import record_similarity, init_record_file
 
 
 def compare_videos(vid1, vid2):
@@ -25,7 +25,7 @@ def compare_videos(vid1, vid2):
     source_fps = get_video_fps(vid1_name)
     target_fps = get_video_fps(vid2_name)
 
-    record_file = csv_handle.init_record_file()
+    record_file = init_record_file()
     print(f"Loading videos: {vid1_name}, {vid2_name}")
     # Save frames into RAM
     for i in range(1, int(tot_fr_1), 30):
