@@ -62,12 +62,13 @@ def compare_videos(vid1, vid2):
 def load_video(vid_info):
     """Load the video object, return with its name."""
     vid_path = vid_info[0]
-    vid_url =  vid_info[1]
+    vid_url = vid_info[1]
     vid = cv2.VideoCapture(vid_path)
     return [vid, vid_path, vid_url]
 
 
 def get_frames(vid, vid_name):
+    # TODO: go for fps more than 30
     """Get all the frames in a video object, write them on disk."""
     total_frames = vid.get(7)
     for i in range(1, int(total_frames), 30):  # 30fps is 30 frames per second.
@@ -99,7 +100,7 @@ def get_video_as_array(filename: str, as_grey=False, fps=None) -> np.ndarray:
     return array
 
 
-def get_the_frame(vid, vid_name, frm_n):
+def get_the_frame(vid, frm_n):
     """Get the specified frame of a video object, write it on disk."""
     vid.set(1, frm_n)
     ret, frame = vid.read()
