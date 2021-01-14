@@ -9,7 +9,7 @@ from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, ffprobe
 
 from downloader import get_video
-from main import change_path
+# from main import change_path
 import csv_handle
 
 
@@ -59,8 +59,10 @@ def compare_videos(vid1, vid2):
     return record_file
 
 
-def load_video(vid_path):
+def load_video(vid_info):
     """Load the video object, return with its name."""
+    vid_path = vid_info[0]
+    vid_url =  vid_info[1]
     vid = cv2.VideoCapture(vid_path)
     return [vid, vid_path, vid_url]
 
