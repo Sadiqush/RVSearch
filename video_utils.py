@@ -47,7 +47,7 @@ def compare_videos(vid1, vid2):
         for t_frame in target_frames:
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
-            score = compare_hash_frames(s_frame, t_frame, hash_len=4)
+            score = compare_hash_frames(s_frame, t_frame, hash_len=24)
             if check_score(score, threshold=0.75):
                 # Record its timestamp
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
@@ -58,6 +58,7 @@ def compare_videos(vid1, vid2):
                         'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
                 print(info, score)
                 record_file = record_similarity(record_file, info)
+                print("--- %s seconds ---" % (time() - start))
                 break  # First similarity in video, break
 
     print("--- %s seconds ---" % (time() - start))
