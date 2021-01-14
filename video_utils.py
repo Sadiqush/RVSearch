@@ -74,11 +74,14 @@ def get_frames(vid) -> list:
     # TODO: go for seconds more than 1 second
     """Get all the frames in a video object, return as a list."""
     frame_list = []
-    total_frames = vid.get(7)
-    fps = get_video_fps(vid_name)
-    for i in range(1, int(total_frames), fps):  # 30fps is 30 frames per second.
-        frame = get_the_frame(vid, i)
+    # total_frames = vid.get(7)
+    # fps = get_video_fps(vid_name)
+
+    success, frame = vid.read()
+    while success:
         frame_list.append(frame)
+        success, image = vid.read()
+
     return frame_list
 
 
