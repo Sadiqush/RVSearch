@@ -51,12 +51,12 @@ def compare_videos(vid1, vid2):
                         'Source': f'{vid2_url}',
                         'Com_TimeStamp': f'{m1}:{s1}',
                         'Source_TimeStamp': f'{m2}:{s2}'}
+                print(info)
                 record_file = record_similarity(record_file)
                 break  # First similarity in video, break
 
     print("--- %s seconds ---" % (time() - start))
-    csv_handle.save_csv(record_file)
-    return None
+    return record_file
 
 
 def load_video(vid_path):
