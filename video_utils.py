@@ -34,7 +34,8 @@ def compare_videos(vid1, vid2):
     for j in range(1, int(tot_fr_2), 30):
         frame_2 = get_the_frame(vid2, j)
         target_frames.append(frame_2)
-
+    print('source length: ', len(source_frames))
+    print('target length: ', len(target_frames))
     # Start comparing
     current_frame_s = 0
     current_frame_t = 0
@@ -42,6 +43,7 @@ def compare_videos(vid1, vid2):
     print('**Comparing started**')
     for s_frame in source_frames:
         current_frame_s += 30
+        current_frame_t = 0   # Reset
         for t_frame in source_frames:
             current_frame_t += 30
             # score = compare_frames(s_frame, t_frame)
@@ -49,6 +51,8 @@ def compare_videos(vid1, vid2):
             print(score)
             if check_score(score):
                 # Record its timestamp
+                # cv2.imwrite(f'{vid1_name}_{current_frame_s}', s_frame)
+                cv2.imwrite(f'{vid2_name}_{current_frame_t}', t_frame)
                 m1, s1 = divmod((current_frame_s / 30), 60)
                 m2, s2 = divmod((current_frame_t / 30), 60)
                 info = {'Compilation': f'{vid1_url}',
