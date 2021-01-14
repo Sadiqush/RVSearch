@@ -22,11 +22,8 @@ def read_csv(inpath):
 
 def init_record_file() -> pd.DataFrame:
     """Make the format for the final .csv file."""
-    record_style = {'Compilation': '',
-                    'Source': '',
-                    'Com_TimeStamp': '',
-                    'Source_TimeStamp': ''}
-    record_df = pd.DataFrame(record_style)
+    record_style = ['Compilation', 'Source', 'Com_TimeStamp', 'Source_TimeStamp']
+    record_df = pd.DataFrame(columns=record_style)
     return record_df
 
 
