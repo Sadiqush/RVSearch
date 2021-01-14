@@ -15,7 +15,7 @@ import csv_handle
 
 def compare_videos(vid1, vid2):
     """Get two video object, start comparing them frame by frame. Linear Search algorithm."""
-    print('Getting ready...')
+    print('Getting ready to start comparison process')
     vid1, vid1_name, vid1_url = vid1[0], vid1[1], vid1[2]
     vid2, vid2_name, vid2_url = vid2[0], vid2[1], vid2[2]
     tot_fr_1 = vid1.get(7)   # Total number of frames of the video
@@ -27,7 +27,7 @@ def compare_videos(vid1, vid2):
     target_fps = get_video_fps(vid2_name)
 
     record_file = csv_handle.init_record_file()
-
+    print(f"Loading videos: {vid1_name}, {vid2_name}")
     # Save frames into RAM
     for i in range(1, int(tot_fr_1), 30):
         frame_1 = get_the_frame(vid1, i)
@@ -46,7 +46,7 @@ def compare_videos(vid1, vid2):
             if check_score(score):
                 # Record its timestamp
                 m1, s1 = divmod((t_frame / source_fps), 60)
-                m1, s2 = divmod((t_frame / target_fps), 60)
+                m2, s2 = divmod((t_frame / target_fps), 60)
                 info = {'Compilation': f'{vid1_url}',
                         'Source': f'{vid2_url}',
                         'Com_TimeStamp': f'{m1}:{s1}',
@@ -56,6 +56,7 @@ def compare_videos(vid1, vid2):
                 break  # First similarity in video, break
 
     print("--- %s seconds ---" % (time() - start))
+    print("Comparing finished")
     return record_file
 
 

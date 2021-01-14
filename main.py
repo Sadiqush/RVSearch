@@ -37,6 +37,8 @@ def run(csv_path):
             record_file = compare_videos(compilation_vid, source_vid)
 
             csv_handle.save_csv(record_file)
+    print("Exiting...")
+    return None
 
 
 if __name__ == '__main__':
