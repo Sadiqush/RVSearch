@@ -1,7 +1,7 @@
 from os import chdir, getcwd
 from pathlib import Path
 
-from reader import read_csv
+from csv_handle import read_csv
 from downloader import get_video
 
 
