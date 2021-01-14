@@ -46,14 +46,15 @@ def compare_videos(vid1, vid2):
             current_frame_t += 30
             # score = compare_frames(s_frame, t_frame)
             score = compare_hash_frames(s_frame, t_frame)
+            print(score)
             if check_score(score):
                 # Record its timestamp
-                m1, s1 = divmod((current_frame_s / source_fps), 60)
-                m2, s2 = divmod((current_frame_t / target_fps), 60)
+                m1, s1 = divmod((current_frame_s / 30), 60)
+                m2, s2 = divmod((current_frame_t / 30), 60)
                 info = {'Compilation': f'{vid1_url}',
                         'Source': f'{vid2_url}',
-                        'Com_TimeStamp': f'{m1}:{s1}',
-                        'Source_TimeStamp': f'{m2}:{s2}'}
+                        'Com_TimeStamp': f'{int(m1)}:{int(s1)}',
+                        'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
                 print(info)
                 record_file = record_similarity(record_file, info)
                 break  # First similarity in video, break
@@ -113,8 +114,8 @@ def get_the_frame(vid, frm_n):
 
 def _hasher(img, hash_len):
     image = Image.fromarray(img)
-    # hashed = ih.phash(image, hash_len)
-    hashed = ih.dhash(image, hash_len)
+    hashed = ih.phash(image, hash_len)
+    # hashed = ih.dhash(image, hash_len)
     return hashed
 
 
@@ -151,7 +152,7 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     return score
 
 
-def check_score(score, threshold=0.65):
+def check_score(score, threshold=0.90):
     """Return True if similarity score reaches the threshold."""
     if score >= threshold:
         return True
