@@ -15,17 +15,17 @@ def _load_csv(inpath):
 def read_csv(inpath):
     """Reads the parts of the csv file and returns them."""
     df = _load_csv(inpath)
-    source = df["source"]
-    targets = df["target"].tolist()
-    return source, targets
+    compilation = df["Compilation"]
+    sources = df["Source"].tolist()
+    return compilation, sources
 
 
 def init_record_file() -> pd.DataFrame:
     """Make the format for the final .csv file."""
-    record_style = {'Source': '',
-                    'Target': '',
-                    'Source_TimeStamp': '',
-                    'Target_TimeStamp': ''}
+    record_style = {'Compilation': '',
+                    'Source': '',
+                    'Com_TimeStamp': '',
+                    'Source_TimeStamp': ''}
     record_df = pd.DataFrame(record_style)
     return record_df
 

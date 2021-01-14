@@ -17,6 +17,6 @@ if __name__ == '__main__':
     # TODO: save
 
     csv_path = ""
-    source, targets = read_csv(csv_path)
-    source_vid = get_video(source)
-    target_vids = [get_video(vid) for vid in targets]
+    compilation, sources = read_csv(csv_path)
+    compilation_vid = get_video(compilation)
+    sources_vids = [get_video(vid) for vid in sources]

@@ -47,10 +47,10 @@ def compare_videos(vid1, vid2):
                 # Record its timestamp
                 m1, s1 = divmod((t_frame / source_fps), 60)
                 m1, s2 = divmod((t_frame / target_fps), 60)
-                info = {'Source': f'{vid1_url}',
-                        'Target': f'{vid2_url}',
-                        'Source_TimeStamp': f'{m1}:{s1}',
-                        'Target_TimeStamp': f'{m2}:{s2}'}
+                info = {'Compilation': f'{vid1_url}',
+                        'Source': f'{vid2_url}',
+                        'Com_TimeStamp': f'{m1}:{s1}',
+                        'Source_TimeStamp': f'{m2}:{s2}'}
                 record_file = record_similarity(record_file)
                 break  # First similarity in video, break
 
