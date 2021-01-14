@@ -9,8 +9,7 @@ from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, ffprobe
 
 from downloader import get_video
-# from main import change_path
-import csv_handle
+from csv_handle import record_similarity
 
 
 def compare_videos(vid1, vid2):
@@ -52,7 +51,7 @@ def compare_videos(vid1, vid2):
                         'Com_TimeStamp': f'{m1}:{s1}',
                         'Source_TimeStamp': f'{m2}:{s2}'}
                 print(info)
-                record_file = record_similarity(record_file)
+                record_file = csv_handle.record_similarity(record_file)
                 break  # First similarity in video, break
 
     print("--- %s seconds ---" % (time() - start))
@@ -159,6 +158,7 @@ def check_score(score, threshold=0.65):
 if __name__ == "__main__":
     # TODO: res lower
     # TODO: GPU accelrate
+    from main import change_path
     change_path()
     # video_name_2 = get_video("https://www.youtube.com/watch?v=-XgD-pUFKaI")
     # video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
