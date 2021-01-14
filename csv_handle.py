@@ -5,7 +5,7 @@ from pathlib import Path
 def _load_csv(inpath):
     """Loads the csv file and checks if the file is ok."""
     df = pd.read_csv(str(inpath))
-    if {"source", "target"}.issubset(df.columns):
+    if {"Compilation", "Source"}.issubset(df.columns):
         # TODO: check the dtype
         return df
     else:
