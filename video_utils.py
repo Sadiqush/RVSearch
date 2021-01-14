@@ -29,10 +29,10 @@ def compare_videos(vid1, vid2):
 
     # Save frames into RAM
     print(f"Loading videos: {vid1_name}, {vid2_name}")
-    for i in range(1, int(tot_fr_1), 30):
+    for i in range(1, int(tot_fr_1), source_fps):
         frame_1 = get_the_frame(vid1, i)
         source_frames.append(frame_1)
-    for j in range(1, int(tot_fr_2), 30):
+    for j in range(1, int(tot_fr_2), target_fps):
         frame_2 = get_the_frame(vid2, j)
         target_frames.append(frame_2)
 
@@ -42,16 +42,16 @@ def compare_videos(vid1, vid2):
     start = time()
     print('**Comparing started**')
     for s_frame in source_frames:
-        current_frame_s += 30
+        current_frame_s += source_fps  # Go up 1 second
         current_frame_t = 0   # Reset
         for t_frame in target_frames:
-            current_frame_t += 30
+            current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
             score = compare_hash_frames(s_frame, t_frame, hash_len=4)
             if check_score(score, threshold=0.75):
                 # Record its timestamp
-                m1, s1 = divmod((current_frame_s / 30), 60)
-                m2, s2 = divmod((current_frame_t / 30), 60)
+                m1, s1 = divmod((current_frame_s / source_fps), 60)
+                m2, s2 = divmod((current_frame_t / target_fps), 60)
                 info = {'Compilation': f'{vid1_url}',
                         'Source': f'{vid2_url}',
                         'Com_TimeStamp': f'{int(m1)}:{int(s1)}',
@@ -74,10 +74,11 @@ def load_video(vid_info):
 
 
 def get_frames(vid, vid_name):
-    # TODO: go for fps more than 30
+    # TODO: go for seconds more than 1
     """Get all the frames in a video object, write them on disk."""
     total_frames = vid.get(7)
-    for i in range(1, int(total_frames), 30):  # 30fps is 30 frames per second.
+    fps = get_video_fps(vid_name)
+    for i in range(1, int(total_frames), fps):  # 30fps is 30 frames per second.
         get_the_frame(vid, vid_name, i)
     return None
 
@@ -94,10 +95,9 @@ def calculate_timestamp(n_frame, vid):
 
 def get_video_fps(filename: str) -> int:
     md: object = ffprobe(filename)['video']
-    print(type(md))
     fr, ps = md['@r_frame_rate'].split('/')
     fps = int(fr) / int(ps)
-    return round(fps, 2)
+    return round(fps)
 
 
 def get_video_as_array(filename: str, as_grey=False, fps=None) -> np.ndarray:
@@ -184,9 +184,9 @@ if __name__ == "__main__":
     print(get_video_fps("u-jvhik9Lwk.mp4"))
     print(get_video_fps("_-uC9nkcd0w.mp4"))
     frame_n = 30
-    frame_1 = get_the_frame(vid1, 3500)
+    frame_1 = get_the_frame(vid1, 1450)
     frame_2 = get_the_frame(vid2, 1104)
-    cv2.imwrite(f'{vid1_name}_1379.jpg', frame_1)
+    cv2.imwrite(f'{vid1_name}_1450.jpg', frame_1)
     cv2.imwrite(f'{vid2_name}_1104.jpg', frame_2)
     compare_frames(frame_1, frame_2, debug=True)
-    print(compare_hash_frames(frame_1, frame_2))
+    print(compare_hash_frames(frame_1, frame_2, hash_len=128))
