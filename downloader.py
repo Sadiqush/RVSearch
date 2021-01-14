@@ -3,6 +3,7 @@ import youtube_dl
 
 def get_video(url) -> list[str, str]:
     """Does all the process related to download and saving."""
+    url = str(url)
     name = _get_info(url)
     response = download(url)
     return [name, url]
