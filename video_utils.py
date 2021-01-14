@@ -36,16 +36,20 @@ def compare_videos(vid1, vid2):
         target_frames.append(frame_2)
 
     # Start comparing
+    current_frame_s = 0
+    current_frame_t = 0
     start = time()
     print('**Comparing started**')
     for s_frame in source_frames:
+        current_frame_s += 30
         for t_frame in source_frames:
+            current_frame_t += 30
             # score = compare_frames(s_frame, t_frame)
             score = compare_hash_frames(s_frame, t_frame)
             if check_score(score):
                 # Record its timestamp
-                m1, s1 = divmod((t_frame / source_fps), 60)
-                m2, s2 = divmod((t_frame / target_fps), 60)
+                m1, s1 = divmod((current_frame_s / source_fps), 60)
+                m2, s2 = divmod((current_frame_t / target_fps), 60)
                 info = {'Compilation': f'{vid1_url}',
                         'Source': f'{vid2_url}',
                         'Com_TimeStamp': f'{m1}:{s1}',
