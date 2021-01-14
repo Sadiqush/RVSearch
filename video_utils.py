@@ -29,12 +29,8 @@ def compare_videos(vid1, vid2):
 
     # Save frames into RAM
     print(f"Loading videos: {vid1_name}, {vid2_name}")
-    for i in range(1, int(tot_fr_1), source_fps):
-        frame_1 = get_the_frame(vid1, i)
-        source_frames.append(frame_1)
-    for j in range(1, int(tot_fr_2), target_fps):
-        frame_2 = get_the_frame(vid2, j)
-        target_frames.append(frame_2)
+    source_frames = get_frames(vid1)
+    target_frames = get_frames(vid2)
 
     # Start comparing
     current_frame_s = 0
@@ -47,7 +43,7 @@ def compare_videos(vid1, vid2):
         for t_frame in target_frames:
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
-            score = compare_hash_frames(s_frame, t_frame, hash_len=24)
+            score = compare_hash_frames(s_frame, t_frame, hash_len=12)
             if check_score(score, threshold=0.75):
                 # Record its timestamp
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
@@ -74,14 +70,23 @@ def load_video(vid_info):
     return [vid, vid_path, vid_url]
 
 
-def get_frames(vid, vid_name):
-    # TODO: go for seconds more than 1
-    """Get all the frames in a video object, write them on disk."""
+def get_frames(vid) -> list:
+    # TODO: go for seconds more than 1 second
+    """Get all the frames in a video object, return as a list."""
+    frame_list = []
     total_frames = vid.get(7)
     fps = get_video_fps(vid_name)
     for i in range(1, int(total_frames), fps):  # 30fps is 30 frames per second.
-        get_the_frame(vid, vid_name, i)
-    return None
+        frame = get_the_frame(vid, i)
+        frame_list.append(frame)
+    return frame_list
+
+
+def get_the_frame(vid, frm_n):
+    """Get the specified frame of a video object, write it on disk."""
+    vid.set(1, frm_n)
+    ret, frame = vid.read()
+    return frame
 
 
 def get_video_duration(filename: str) -> int:
@@ -107,13 +112,6 @@ def get_video_as_array(filename: str, as_grey=False, fps=None) -> np.ndarray:
         fr = get_video_fps(filename) // fps
         return array[::fr]
     return array
-
-
-def get_the_frame(vid, frm_n):
-    """Get the specified frame of a video object, write it on disk."""
-    vid.set(1, frm_n)
-    ret, frame = vid.read()
-    return frame
 
 
 def _hasher(img, hash_len):
