@@ -29,37 +29,31 @@ def video_init(vid_file):
 def compare_videos(source_frames, source_fps, target_frames, target_fps):
     """Get two video object, start comparing them frame by frame. Linear Search algorithm."""
     print('Getting ready to start comparison process')
-    record_file = init_record_file()
 
     current_frame_s = 0
     current_frame_t = 0
+    timestamps = []
     start = time()
     print('**Comparing started**')
     for s_frame in source_frames:
         current_frame_s += source_fps  # Go up 1 second
-        current_frame_t = 0   # Reset
+        current_frame_t = 0   # One target done, now reset
         for t_frame in target_frames:
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
             score = compare_hash_frames(s_frame, t_frame, hash_len=12)
-            # print(score)
             if check_score(score, threshold=0.75):
                 # Record its timestamp
-                # TODO: save results in another function
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
                 m2, s2 = divmod((current_frame_t / target_fps), 60)
-                info = {'Compilation': f'{vid1_url}',
-                        'Source': f'{vid2_url}',
-                        'Com_TimeStamp': f'{int(m1)}:{int(s1)}',
-                        'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
-                print(info, score)
-                record_file = record_similarity(record_file, info)
+                timestamps.append([[m1, s1], [m2, s2], score])
+
                 print("--- %s seconds ---" % (time() - start))
                 break  # First similarity in video, break
 
     print("--- %s seconds ---" % (time() - start))
     print("Comparing finished")
-    return record_file
+    return timestamps
 
 
 def extract_info(vid_info):

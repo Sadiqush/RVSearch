@@ -2,7 +2,7 @@ from os import chdir, getcwd
 from pathlib import Path
 
 from video_utils import compare_videos, video_init
-from csv_handle import read_csv, save_csv
+from csv_handle import read_csv, save_csv, record_similarity
 from downloader import get_video
 
 
@@ -23,13 +23,14 @@ def extract_urls(csv_path):
 
 def run(csv_path):
     """Main function: read csv, download videos, compare them, save results."""
-    # TODO: save in current path
+    currnt_path = getcwd()
     change_path()
     compilation_list, source_list = extract_urls(csv_path)
     for com_url in compilation_list:
         # TODO: each source should ba a separated thread
         for source_url in source_list:
             # Downloading
+            # TODO: dont download if exists.
             cmp_file = get_video(com_url)
             src_file = get_video(source_url)
 
@@ -38,10 +39,11 @@ def run(csv_path):
             frames_src, fps_src, vid_name_src, vid_url_src = video_init(src_file)
 
             # Do the comparison
-            record_file = compare_videos(frames_cmp, fps_cmp, frames_src, fps_src)
+            time_stamps = compare_videos(frames_cmp, fps_cmp, frames_src, fps_src)
+            record_df = record_similarity(time_stamps, [vid_url_cmp, vid_url_src])
 
             # TODO: maybe save in comparing?
-            save_csv(record_file, f'{vid_name_cmp}_results')
+            save_csv(record_df, f'{currnt_path}/{vid_name_cmp}_results')
     print("Exiting...")
     return None
 

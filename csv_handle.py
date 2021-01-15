@@ -39,10 +39,23 @@ def _check_and_rename(file_name, add=0) -> str:
         return file_name
 
 
-def record_similarity(df: pd.DataFrame, data_dict: dict) -> pd.DataFrame:
+def record_similarity(timestamps, urls):
     """When you find a similar video, save its information to a dataframe then give it back."""
-    df = df.append(data_dict, ignore_index=True)
-    return df
+    # If you want to dynamically save .csv, init before recording
+    record_df = init_record_file()
+    for stamp in timestamps:
+        m1, s1 = stamp[0][0], stamp[0][1]
+        m2, s2 = stamp[1][0], stamp[1][1]
+        score = stamp[2]
+
+        info = {'Compilation': f'{urls[0]}',
+                'Source': f'{urls[1]}',
+                'Com_TimeStamp': f'{int(m1)}:{int(s1)}',
+                'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
+        print(info, score)
+
+        record_df = record_df.append(info, ignore_index=True)
+    return record_df
 
 
 def save_csv(df: pd.DataFrame, csv_name="results"):
