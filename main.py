@@ -30,7 +30,6 @@ def run(csv_path):
         # TODO: each source should ba a separated thread
         for source_url in source_list:
             # Downloading
-            # TODO: dont download if exists.
             cmp_file = get_video(com_url)
             src_file = get_video(source_url)
 
@@ -46,6 +45,9 @@ def run(csv_path):
             save_csv(record_df, f'{currnt_path}/{vid_name_cmp}_results.csv')
     print("Exiting...")
     return None
+
+
+# TODO: add logger
 
 
 if __name__ == '__main__':

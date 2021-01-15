@@ -1,11 +1,16 @@
 import youtube_dl
+from pathlib import Path
 
 
 def get_video(url) -> list[str, str]:
     """Does all the process related to download and saving."""
     url = str(url)
+    # TODO: dont download if exists.
     name = _get_info(url)
-    response = download(url)
+    if Path(name).exists():
+        print("Skipping download, file already exists.")
+    else:
+        response = download(url)
     return [name, url]
 
 
