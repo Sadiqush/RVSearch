@@ -1,7 +1,6 @@
 from time import time
 
 import numpy as np
-from PIL import Image
 import imagehash as ih
 import cv2
 from skimage.metrics import normalized_root_mse as n_rmse
