@@ -30,11 +30,11 @@ def init_record_file() -> pd.DataFrame:
 def _check_and_rename(file_name, add=0) -> str:
     """Used for rename duplicate files to avoid overwriting."""
     if add != 0:
-        name_split = file.split(".")  # e.g.: .mp4
-        renamed = f"{split[0]}_({str(add)})"
+        name_split = file_name.split(".")  # e.g.: .mp4
+        renamed = f"{name_split[0]}_({str(add)})"
         file_name = ".".join([renamed, name_split[1]])
     if Path(file_name).exists():
-        _check_and_rename(original_file, add=+1)
+        _check_and_rename(file_name, add=+1)
     else:
         return file_name
 
@@ -45,8 +45,8 @@ def record_similarity(df: pd.DataFrame, data_dict: dict) -> pd.DataFrame:
     return df
 
 
-def save_csv(df: pd.DataFrame, csv_name: str):
+def save_csv(df: pd.DataFrame, csv_name="results"):
     """Saves a dataframe to a .csv file with precautions."""
     csv_name = _check_and_rename(csv_name)
-    df.to_csv(f'{csv_name}', index=true)
+    df.to_csv(f'{csv_name}', index=True)
     return None
