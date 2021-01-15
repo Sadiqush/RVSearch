@@ -36,9 +36,8 @@ def _check_and_rename(file_name, add=0) -> str:
         renamed = f"{name_split[0]}_({str(add)})"
         file_name = ".".join([renamed, name_split[1]])
     if Path(file_name).exists():
-        _check_and_rename(file_name, add=+1)
-    else:
-        return file_name
+        file_name = _check_and_rename(file_name, add=+1)
+    return file_name
 
 
 def record_similarity(timestamps, urls, names, channels):
@@ -69,4 +68,5 @@ def save_csv(df: pd.DataFrame, csv_name="results"):
     """Saves a dataframe to a .csv file with precautions."""
     csv_name = _check_and_rename(csv_name)
     df.to_csv(f'{csv_name}', index=True)
+    print('Results saved to ', csv_name)
     return None
