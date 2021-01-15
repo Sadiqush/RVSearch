@@ -1,8 +1,8 @@
 from os import chdir, getcwd
 from pathlib import Path
 
-from video_utils import compare_videos, load_video
-from csv_handle import read_csv
+from video_utils import compare_videos, load_video, load_video_decord
+from csv_handle import read_csv, save_csv
 from downloader import get_video
 
 
@@ -36,7 +36,7 @@ def run(csv_path):
             # Do the comparison
             record_file = compare_videos(compilation_vid, source_vid)
 
-            csv_handle.save_csv(record_file)
+            save_csv(record_file)
     print("Exiting...")
     return None
 
@@ -44,6 +44,4 @@ def run(csv_path):
 if __name__ == '__main__':
     run(csv_path="/home/sadegh/video_search_test.csv")
 
-    # TODO: read csv
-    # TODO: compare
     # TODO: save
