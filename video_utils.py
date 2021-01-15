@@ -52,7 +52,6 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
                 break  # First similarity in video, break
 
     print("--- %s seconds ---" % (time() - start))
-    print("Comparing finished")
     return timestamps
 
 

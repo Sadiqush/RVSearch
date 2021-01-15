@@ -68,5 +68,4 @@ def save_csv(df: pd.DataFrame, csv_name="results"):
     """Saves a dataframe to a .csv file with precautions."""
     csv_name = _check_and_rename(csv_name)
     df.to_csv(f'{csv_name}', index=True)
-    print('Results saved to ', csv_name)
-    return None
+    return csv_name

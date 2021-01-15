@@ -39,6 +39,7 @@ def run(csv_path):
 
             # Do the comparison
             time_stamps = compare_videos(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
+            print(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
 
             record_df = record_similarity(time_stamps,
                                           [meta_cmp['url'], meta_src['url']],
@@ -46,7 +47,8 @@ def run(csv_path):
                                           [meta_cmp['channel'], meta_src['channel']])
 
             # TODO: maybe save in comparing?
-            save_csv(record_df, f'{currnt_path}/{meta_cmp["name"]}_results.csv')
+            final_csv_name = save_csv(record_df, f'{currnt_path}/{meta_cmp["name"]}_results.csv')
+            print('Results saved to ', final_csv_name)
     print("All done. Exiting...")
     return None
 
