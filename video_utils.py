@@ -29,13 +29,6 @@ def compare_videos(vid1, vid2):
     source_frames = get_frames(vid1, vid1_name)
     target_frames = get_frames(vid2, vid2_name)
 
-    count = 0
-    for frame in source_frames:
-        cv2.imwrite(f'{vid1_name}_{count}.jpg', frame)
-        count += 1
-        if count == 10:
-            break
-
     # Start comparing
     current_frame_s = 0
     current_frame_t = 0
@@ -47,7 +40,7 @@ def compare_videos(vid1, vid2):
         for t_frame in target_frames:
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
-            score = compare_hash_frames(s_frame, t_frame, hash_len=12)
+            score = compare_hash_frames(s_frame, t_frame, hash_len=8)
             # print(score)
             if check_score(score, threshold=0.75):
                 # Record its timestamp
@@ -164,7 +157,6 @@ def compare_hash_frames(frame_0, frame_1, hash_len=8):
     h0, h1 = _hasher(frame_0, hash_len), _hasher(frame_1, hash_len)
     hl = hash_len ** 2
     dif = abs(h0 - h1)
-    # print(1 - dif / hl)
     return 1 - dif / hl
 
 
