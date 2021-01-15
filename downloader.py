@@ -5,7 +5,7 @@ from pathlib import Path
 def get_video(url) -> list[str, str]:
     """Does all the process related to download and saving."""
     url = str(url)
-    # TODO: dont download if exists.
+    # TODO: if above 30min
     id, name, channel = _get_info(url)
     if Path(id).exists():
         print("** Skipping download, file already exists")
