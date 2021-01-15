@@ -8,7 +8,7 @@ def get_video(url) -> list[str, str]:
     # TODO: dont download if exists.
     name = _get_info(url)
     if Path(name).exists():
-        print("Skipping download, file already exists.")
+        print("** Skipping download, file already exists")
     else:
         response = download(url)
     return [name, url]
