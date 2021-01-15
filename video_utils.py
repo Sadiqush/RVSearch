@@ -13,23 +13,24 @@ from downloader import get_video
 from csv_handle import record_similarity, init_record_file
 
 
-def compare_videos(vid1, vid2):
-    """Get two video object, start comparing them frame by frame. Linear Search algorithm."""
-    print('Getting ready to start comparison process')
-    vid1, vid1_name, vid1_url = vid1[0], vid1[1], vid1[2]
-    vid2, vid2_name, vid2_url = vid2[0], vid2[1], vid2[2]
-
-    source_fps = get_video_fps(vid1_name)
-    target_fps = get_video_fps(vid2_name)
-
-    record_file = init_record_file()
+def video_init(vid_file):
+    # TODO: return actual name not ID
+    vid_info = extract_info(vid_file)
+    vid, vid_name, vid_url = vid_info[0], vid_info[1], vid_info[2]
+    fps = get_video_fps(vid_name)
 
     # Save frames into RAM
-    print(f"Loading videos: {vid1_name}, {vid2_name}")
-    source_frames = get_frames(vid1, vid1_name)
-    target_frames = get_frames(vid2, vid2_name)
+    print(f"Loading video: {vid_name}")
+    frames = get_frames(vid, vid_name)
 
-    # Start comparing
+    return frames, fps, vid_name, vid_url
+
+
+def compare_videos(source_frames, source_fps, target_frames, target_fps):
+    """Get two video object, start comparing them frame by frame. Linear Search algorithm."""
+    print('Getting ready to start comparison process')
+    record_file = init_record_file()
+
     current_frame_s = 0
     current_frame_t = 0
     start = time()
@@ -44,6 +45,7 @@ def compare_videos(vid1, vid2):
             # print(score)
             if check_score(score, threshold=0.75):
                 # Record its timestamp
+                # TODO: save results in another function
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
                 m2, s2 = divmod((current_frame_t / target_fps), 60)
                 info = {'Compilation': f'{vid1_url}',
@@ -60,7 +62,7 @@ def compare_videos(vid1, vid2):
     return record_file
 
 
-def load_video(vid_info):
+def extract_info(vid_info):
     """Load the video object, return with its name."""
     vid_path = vid_info[0]
     vid_url = vid_info[1]
@@ -167,21 +169,19 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
     if gray:
         image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
         image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
-    # score = ssim(image_a, image_b,
-    #              multichannel=True,
-    #              # gaussian_weights=True, sigma=1.5,
-    #              use_sample_covariance=False)
-    score = 1 - n_rmse(image_a, image_b)
     if debug:
         # Some other scores, print everything.
         phash_score = compare_hash_frames(image_a, image_b, hash_len=4)
         psnr = cv2.PSNR(image_a, image_b)
         nrmse_score = 1 - n_rmse(image_a, image_b)
 
-        print("SSIM: {}".format(score))
-        print("pHash: ", phash_score)
+        # print("SSIM: {}".format(score))
+        print("pHash-4: ", phash_score)
         print('PSNR: ', psnr)
         print('NRMSE: ', nrmse_score)
+    else:
+        score = 1 - n_rmse(image_a, image_b)
+
     return score
 
 
