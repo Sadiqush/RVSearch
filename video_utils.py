@@ -40,7 +40,7 @@ def compare_videos(vid1, vid2):
         for t_frame in target_frames:
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
-            score = compare_hash_frames(s_frame, t_frame, hash_len=8)
+            score = compare_hash_frames(s_frame, t_frame, hash_len=12)
             # print(score)
             if check_score(score, threshold=0.75):
                 # Record its timestamp
@@ -145,7 +145,7 @@ def phash(image, hash_size=8, highfreq_factor=4):
     import scipy.fft
     img_size = hash_size * highfreq_factor
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    image = cv2.resize(image, (img_size, img_size), interpolation=cv2.INTER_AREA)
+    image = cv2.resize(image, (img_size, img_size), interpolation=cv2.INTER_LINEAR)
     dct = scipy.fft.dct(scipy.fft.dct(image, axis=0), axis=1)
     dctlowfreq = dct[:hash_size, :hash_size]
     med = np.median(dctlowfreq)
