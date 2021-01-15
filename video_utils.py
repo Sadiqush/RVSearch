@@ -7,6 +7,7 @@ import cv2
 from skimage.metrics import normalized_root_mse as n_rmse
 from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, ffprobe
+from decord import VideoReader, cpu
 
 from downloader import get_video
 from csv_handle import record_similarity, init_record_file
@@ -17,11 +18,7 @@ def compare_videos(vid1, vid2):
     print('Getting ready to start comparison process')
     vid1, vid1_name, vid1_url = vid1[0], vid1[1], vid1[2]
     vid2, vid2_name, vid2_url = vid2[0], vid2[1], vid2[2]
-    tot_fr_1 = vid1.get(7)   # Total number of frames of the video
-    tot_fr_2 = vid2.get(7)
 
-    source_frames = []
-    target_frames = []
     source_fps = get_video_fps(vid1_name)
     target_fps = get_video_fps(vid2_name)
 
@@ -29,8 +26,15 @@ def compare_videos(vid1, vid2):
 
     # Save frames into RAM
     print(f"Loading videos: {vid1_name}, {vid2_name}")
-    source_frames = get_frames(vid1)
-    target_frames = get_frames(vid2)
+    source_frames = get_frames(vid1, vid1_name)
+    target_frames = get_frames(vid2, vid2_name)
+
+    count = 0
+    for frame in source_frames:
+        cv2.imwrite(f'{vid1_name}_{count}.jpg', frame)
+        count += 1
+        if count == 10:
+            break
 
     # Start comparing
     current_frame_s = 0
@@ -44,6 +48,7 @@ def compare_videos(vid1, vid2):
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
             score = compare_hash_frames(s_frame, t_frame, hash_len=12)
+            # print(score)
             if check_score(score, threshold=0.75):
                 # Record its timestamp
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
@@ -70,17 +75,33 @@ def load_video(vid_info):
     return [vid, vid_path, vid_url]
 
 
-def get_frames(vid) -> list:
+def load_video_decord(vid_info):
+    """Load the video object, return with its name."""
+    vid_path = vid_info[0]
+    vid_url = vid_info[1]
+    vid = VideoReader(vid_path, ctx=cpu(0))
+    return [vid, vid_path, vid_url]
+
+
+def get_frames_decord(vid) -> list:
+    """Get all the frames in a video object using Decord, return as a list."""
+    frame_list = []
+    for i in range(0, len(vid), 30):
+        frame = vid[i]
+        frame_list.append(frame)
+
+    return frame_list
+
+
+def get_frames(vid, vid_name) -> list:
     # TODO: go for seconds more than 1 second
     """Get all the frames in a video object, return as a list."""
     frame_list = []
-    # total_frames = vid.get(7)
-    # fps = get_video_fps(vid_name)
-
-    success, frame = vid.read()
-    while success:
+    total_frames = vid.get(7)
+    fps = get_video_fps(vid_name)
+    for i in range(1, int(total_frames), fps):  # 30fps is 30 frames per second.
+        frame = get_the_frame(vid, i)
         frame_list.append(frame)
-        success, image = vid.read()
 
     return frame_list
 
