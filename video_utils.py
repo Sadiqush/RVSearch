@@ -9,17 +9,21 @@ from skvideo.io import vread, ffprobe
 from decord import VideoReader, cpu
 
 
-def video_init(vid_file):
+def video_init(vid_info):
     # TODO: return actual name not ID
-    vid_info = extract_info(vid_file)
-    vid, vid_path, vid_name, vid_url = vid_info[0], vid_info[1], vid_info[2], vid_info[3]
-    fps = get_video_fps(vid_path)
+    vid_meta = {'path': vid_info[0],
+                'name': vid_info[1],
+                'channel': vid_info[2],
+                'url': vid_info[3]}
+    vid = cv2.VideoCapture(vid_meta['path'])   # TODO: GPU accelrate
+    fps = get_video_fps(vid_meta['path'])
+    vid_meta['fps'] = fps
 
     # Save frames into RAM
-    print(f"Loading video: {vid_path} -- {vid_name}")
-    frames = get_frames(vid, vid_path)
+    print(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
+    frames = get_frames(vid, vid_meta['path'])
 
-    return frames, fps, vid_path, vid_name, vid_url
+    return frames, vid_meta
 
 
 def compare_videos(source_frames, source_fps, target_frames, target_fps):
@@ -43,22 +47,13 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
                 m2, s2 = divmod((current_frame_t / target_fps), 60)
                 timestamps.append([[m1, s1], [m2, s2], score])
-                print(f"{timestamps[0]} - {timestamps[1]} score: {timestamps[2]}")
+                print(f"{timestamps[0][0]} - {timestamps[0][1]} score: {timestamps[0][2]}")
                 print("--- %s seconds ---" % (time() - start))
                 break  # First similarity in video, break
 
     print("--- %s seconds ---" % (time() - start))
     print("Comparing finished")
     return timestamps
-
-
-def extract_info(vid_info):
-    """Load the video object, return with its name."""
-    vid_path = vid_info[0]
-    vid_name = vid_info[1]
-    vid_url = vid_info[1]
-    vid = cv2.VideoCapture(vid_path)   # TODO: GPU accelrate
-    return [vid, vid_path, vid_name, vid_url]
 
 
 def load_video_decord(vid_info):
