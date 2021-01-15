@@ -139,10 +139,25 @@ def get_video_as_array(filename: str, as_grey=False, fps=None) -> np.ndarray:
 
 
 def _hasher(img, hash_len):
-    image = Image.fromarray(img)
-    hashed = ih.phash(image, hash_len)
+    hashed = phash(img, hash_len)
     # hashed = ih.dhash(image, hash_len)
     return hashed
+
+
+def phash(image, hash_size=8, highfreq_factor=4):
+    """Perceptual Hash computation."""
+    if hash_size < 2:
+        raise ValueError("Hash size must be greater than or equal to 2")
+
+    import scipy.fft
+    img_size = hash_size * highfreq_factor
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    image = cv2.resize(image, (img_size, img_size), interpolation=cv2.INTER_AREA)
+    dct = scipy.fft.dct(scipy.fft.dct(image, axis=0), axis=1)
+    dctlowfreq = dct[:hash_size, :hash_size]
+    med = np.median(dctlowfreq)
+    diff = dctlowfreq > med
+    return ih.ImageHash(diff)
 
 
 def compare_hash_frames(frame_0, frame_1, hash_len=8):
