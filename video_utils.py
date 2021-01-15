@@ -9,9 +9,6 @@ from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, ffprobe
 from decord import VideoReader, cpu
 
-from downloader import get_video
-from csv_handle import record_similarity, init_record_file
-
 
 def video_init(vid_file):
     # TODO: return actual name not ID
@@ -47,7 +44,7 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
                 m2, s2 = divmod((current_frame_t / target_fps), 60)
                 timestamps.append([[m1, s1], [m2, s2], score])
-
+                print(f"{timestamps[0]} - {timestamps[1]} score: {timestamps[2]}")
                 print("--- %s seconds ---" % (time() - start))
                 break  # First similarity in video, break
 
@@ -60,7 +57,7 @@ def extract_info(vid_info):
     """Load the video object, return with its name."""
     vid_path = vid_info[0]
     vid_url = vid_info[1]
-    vid = cv2.VideoCapture(vid_path)
+    vid = cv2.VideoCapture(vid_path)   # TODO: GPU accelrate
     return [vid, vid_path, vid_url]
 
 
@@ -83,7 +80,7 @@ def get_frames_decord(vid) -> list:
 
 
 def get_frames(vid, vid_name) -> list:
-    # TODO: go for seconds more than 1 second
+    # TODO: go for seconds more than 1 second maybe?
     """Get all the frames in a video object, return as a list."""
     frame_list = []
     total_frames = vid.get(7)
@@ -106,10 +103,6 @@ def get_video_duration(filename: str) -> int:
     md = ffprobe(filename)['video']
     dur = md['@duration']
     return int(dur)
-
-
-def calculate_timestamp(n_frame, vid):
-    pass
 
 
 def get_video_fps(filename: str) -> int:
@@ -188,8 +181,6 @@ def check_score(score, threshold=0.75):
 
 
 if __name__ == "__main__":
-    # TODO: res lower
-    # TODO: GPU accelrate
     from main import change_path
     change_path()
     # video_name_2 = get_video("https://www.youtube.com/watch?v=-XgD-pUFKaI")

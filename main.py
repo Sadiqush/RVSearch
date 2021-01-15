@@ -43,7 +43,7 @@ def run(csv_path):
             record_df = record_similarity(time_stamps, [vid_url_cmp, vid_url_src])
 
             # TODO: maybe save in comparing?
-            save_csv(record_df, f'{currnt_path}/{vid_name_cmp}_results')
+            save_csv(record_df, f'{currnt_path}/{vid_name_cmp}_results.csv')
     print("Exiting...")
     return None
 

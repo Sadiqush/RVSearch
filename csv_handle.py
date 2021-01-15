@@ -44,6 +44,7 @@ def record_similarity(timestamps, urls):
     # If you want to dynamically save .csv, init before recording
     record_df = init_record_file()
     for stamp in timestamps:
+        # TODO: Sum near timestamps together
         m1, s1 = stamp[0][0], stamp[0][1]
         m2, s2 = stamp[1][0], stamp[1][1]
         score = stamp[2]
