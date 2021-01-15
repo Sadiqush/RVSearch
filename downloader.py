@@ -6,12 +6,12 @@ def get_video(url) -> list[str, str]:
     """Does all the process related to download and saving."""
     url = str(url)
     # TODO: dont download if exists.
-    name = _get_info(url)
-    if Path(name).exists():
+    id, name = _get_info(url)
+    if Path(id).exists():
         print("** Skipping download, file already exists")
     else:
         response = download(url)
-    return [name, url]
+    return [id, name, url]
 
 
 def download(url):
@@ -50,12 +50,13 @@ def _get_info(url):
     """Get video's information. Also, if the URL is a playlist, fuck 'em."""
     with youtube_dl.YoutubeDL({'logger': MyLogger()}) as ydl:
         result = ydl.extract_info(url, download=False)
-        name = result['id']
+        id = result['id']
+        name = result['title']
 
     if 'entries' in result:
         raise Exception("Please provide a single video URL.")
 
-    return name + '.mp4'
+    return id + '.mp4', name
 
 
 if __name__ == '__main__':

@@ -34,12 +34,14 @@ def run(csv_path):
             src_file = get_video(source_url)
 
             # Getting things ready
-            frames_cmp, fps_cmp, vid_name_cmp, vid_url_cmp = video_init(cmp_file)
-            frames_src, fps_src, vid_name_src, vid_url_src = video_init(src_file)
+            frames_cmp, fps_cmp, vid_path_cmp, vid_name_cmp, vid_url_cmp = video_init(cmp_file)
+            frames_src, fps_src, vid_path_src, vid_name_src, vid_url_src = video_init(src_file)
 
             # Do the comparison
             time_stamps = compare_videos(frames_cmp, fps_cmp, frames_src, fps_src)
-            record_df = record_similarity(time_stamps, [vid_url_cmp, vid_url_src])
+            record_df = record_similarity(time_stamps,
+                                          [vid_url_cmp, vid_url_src],
+                                          [vid_name_cmp, vid_name_src])
 
             # TODO: maybe save in comparing?
             save_csv(record_df, f'{currnt_path}/{vid_name_cmp}_results.csv')

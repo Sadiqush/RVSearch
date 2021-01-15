@@ -12,14 +12,14 @@ from decord import VideoReader, cpu
 def video_init(vid_file):
     # TODO: return actual name not ID
     vid_info = extract_info(vid_file)
-    vid, vid_name, vid_url = vid_info[0], vid_info[1], vid_info[2]
-    fps = get_video_fps(vid_name)
+    vid, vid_path, vid_name, vid_url = vid_info[0], vid_info[1], vid_info[2], vid_info[3]
+    fps = get_video_fps(vid_path)
 
     # Save frames into RAM
-    print(f"Loading video: {vid_name}")
-    frames = get_frames(vid, vid_name)
+    print(f"Loading video: {vid_path} -- {vid_name}")
+    frames = get_frames(vid, vid_path)
 
-    return frames, fps, vid_name, vid_url
+    return frames, fps, vid_path, vid_name, vid_url
 
 
 def compare_videos(source_frames, source_fps, target_frames, target_fps):
@@ -55,9 +55,10 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
 def extract_info(vid_info):
     """Load the video object, return with its name."""
     vid_path = vid_info[0]
+    vid_name = vid_info[1]
     vid_url = vid_info[1]
     vid = cv2.VideoCapture(vid_path)   # TODO: GPU accelrate
-    return [vid, vid_path, vid_url]
+    return [vid, vid_path, vid_name, vid_url]
 
 
 def load_video_decord(vid_info):

@@ -22,7 +22,9 @@ def read_csv(inpath):
 
 def init_record_file() -> pd.DataFrame:
     """Make the format for the final .csv file."""
-    record_style = ['Compilation', 'Source', 'Com_TimeStamp', 'Source_TimeStamp']
+    record_style = ['Compilation', 'Cmp_name',
+                    'Source', 'Source_name',
+                    'Cmp_TimeStamp', 'Source_TimeStamp']
     record_df = pd.DataFrame(columns=record_style)
     return record_df
 
@@ -39,7 +41,7 @@ def _check_and_rename(file_name, add=0) -> str:
         return file_name
 
 
-def record_similarity(timestamps, urls):
+def record_similarity(timestamps, urls, names):
     """When you find a similar video, save its information to a dataframe then give it back."""
     # If you want to dynamically save .csv, init before recording
     record_df = init_record_file()
@@ -50,8 +52,10 @@ def record_similarity(timestamps, urls):
         score = stamp[2]
 
         info = {'Compilation': f'{urls[0]}',
+                'Cmp_name': names[0],
                 'Source': f'{urls[1]}',
-                'Com_TimeStamp': f'{int(m1)}:{int(s1)}',
+                'Source_name': names[1],
+                'Cmp_TimeStamp': f'{int(m1)}:{int(s1)}',
                 'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
         print(info, score)
 
