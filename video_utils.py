@@ -46,8 +46,8 @@ def video_init(vid_info):
     # Save frames into RAM
     print(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
     start = time()
-    frames = Video(vid_meta['path'], fps=1).get_frames()
-    # frames = get_frames(vid, vid_meta['path'])
+    # frames = Video(vid_meta['path'], fps=1).get_frames()
+    frames = get_frames(vid, vid_meta['path'])
     print(time() - start)
     return frames, vid_meta
 
@@ -67,9 +67,9 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
         for t_frame in target_frames:
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
-            # score = compare_hash_frames(s_frame, t_frame, hash_len=12)
-            score = compare_objects(s_frame, t_frame)
-            if check_score(score, threshold=150):
+            score = compare_hash_frames(s_frame, t_frame, hash_len=12)
+            # score = compare_objects(s_frame, t_frame)
+            if check_score(score, threshold=0.75):
                 # Record its timestamp
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
                 m2, s2 = divmod((current_frame_t / target_fps), 60)
