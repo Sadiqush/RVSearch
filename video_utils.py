@@ -1,12 +1,13 @@
 from time import time
+import multiprocessing as mp
 
 import numpy as np
 import cv2
-from skimage.metrics import normalized_root_mse as n_rmse
-from skimage.metrics import structural_similarity as ssim
+# from skimage.metrics import normalized_root_mse as n_rmse
+# from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, vreader, ffprobe
 from itertools import islice
-from decord import VideoReader, cpu
+# from decord import VideoReader, cpu
 
 import imagehash as ih
 
@@ -22,7 +23,7 @@ class Video:
         self.duration = float(md['@duration'])
         fr, ps = md['@avg_frame_rate'].split('/')
         self.original_fps = int(fr) / int(ps)
-        self.fps = fps if fps else  self.original_fps
+        self.fps = fps if fps else self.original_fps
 
     def __iter__(self):
         vgen = vreader(self.file_name, as_grey=self.grey)
@@ -39,17 +40,32 @@ def video_init(vid_info):
                 'name': vid_info[1],
                 'channel': vid_info[2],
                 'url': vid_info[3]}
-    vid = cv2.VideoCapture(vid_meta['path'])   # TODO: GPU accelrate
+    # vid = cv2.VideoCapture(vid_meta['path'])   # TODO: GPU accelrate
     fps = get_video_fps(vid_meta['path'])
     vid_meta['fps'] = fps
 
     # Save frames into RAM
     print(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
     start = time()
-    # frames = Video(vid_meta['path'], fps=1).get_frames()
-    frames = get_frames(vid, vid_meta['path'])
+    frames = Video(vid_meta['path'], fps=1).get_frames()
+    # frames = get_frames(vid, vid_meta['path'])
     print(time() - start)
     return frames, vid_meta
+
+
+def compare_videos_parallel(source_frames, source_fps, target_frames, target_fps):
+    pool = mp.Pool()
+    cpus = mp.cpu_count()
+    n = int(len(source_frames) / cpus)
+    subs = [source_frames[i:i + n] for i in range(0, len(source_frames), n)]
+    args = [(sub, source_fps, target_frames, target_fps) for sub in subs]
+    results = pool.starmap(compare_videos, args)
+    print('results are: ', results)
+    ret = []
+    for res in results:
+        if res:
+            ret.append(res)
+    return ret
 
 
 def compare_videos(source_frames, source_fps, target_frames, target_fps):
@@ -60,6 +76,7 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
     current_frame_t = 0
     timestamps = []
     start = time()
+
     print('**Comparing started**')
     for s_frame in source_frames:
         current_frame_s += source_fps  # Go up 1 second
@@ -74,13 +91,14 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
                 m2, s2 = divmod((current_frame_t / target_fps), 60)
                 timestamps.append([[m1, s1], [m2, s2], score])
-                print(timestamps)
+                print(timestamps[-1])
                 # print(f"{timestamps[0][0]}:{timestamps[0][1]} - {timestamps[1][0]}:{timestamps[1][1]} score: {timestamps[0][2]}")
                 print("--- %s seconds ---" % (time() - start))
                 break  # First similarity in video, break
 
     print("--- %s seconds ---" % (time() - start))
     return timestamps
+
 
 
 def load_video_decord(vid_info):
@@ -247,8 +265,8 @@ if __name__ == "__main__":
     # vid1, vid1_name, vid1_url = load_video(["u-jvhik9Lwk.mp4", "x"])
     # vid2, vid2_name, vid2_url = load_video(["_-uC9nkcd0w.mp4", "x"])
     # compare_videos(vid1, vid2)
-    # print(get_video_fps("u-jvhik9Lwk.mp4"))
-    # print(get_video_fps("_-uC9nkcd0w.mp4"))
+    print(get_video_fps("u-jvhik9Lwk.mp4"))
+    print(get_video_fps("_-uC9nkcd0w.mp4"))
     # frame_n = 30
     # frame_1 = get_the_frame(vid1, 1450)
     # frame_2 = get_the_frame(vid2, 1104)

@@ -1,7 +1,7 @@
 from os import chdir, getcwd
 from pathlib import Path
 
-from video_utils import compare_videos, video_init
+from video_utils import video_init, compare_videos_parallel
 from csv_handle import read_csv, save_csv, record_similarity
 from downloader import get_video
 
@@ -19,7 +19,6 @@ def run(csv_path):
     compilation_list, source_list = read_csv(csv_path)
 
     for com_url in compilation_list:
-        # TODO: each source should ba a separated thread
         for source_url in source_list:
             # Downloading
             cmp_file = get_video(com_url)
@@ -30,7 +29,7 @@ def run(csv_path):
             frames_src, meta_src = video_init(src_file)
 
             # Do the comparison
-            time_stamps = compare_videos(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
+            time_stamps = compare_videos_parallel(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
             print(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
 
             record_df = record_similarity(time_stamps,

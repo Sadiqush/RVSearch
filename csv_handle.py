@@ -48,23 +48,25 @@ def record_similarity(timestamps, urls, names, channels):
     """When you find a similar video, save its information to a dataframe then give it back."""
     # If you want to dynamically save .csv, init before recording
     record_df = init_record_file()
-    for stamp in timestamps:
-        # TODO: Sum near timestamps together
-        m1, s1 = stamp[0][0], stamp[0][1]
-        m2, s2 = stamp[1][0], stamp[1][1]
-        score = stamp[2]
+    for thread_res in timestamps:
+        for stamp in thread_res:
+            # TODO: Sum near timestamps together
+            print(stamp)
+            m1, s1 = stamp[0][0], stamp[0][1]
+            m2, s2 = stamp[1][0], stamp[1][1]
+            score = stamp[2]
 
-        info = {'Cmpl_url': f'{urls[0]}',
-                'Cmp_name': names[0],
-                'Cmp_chnl': channels[0],
-                'Source_url': f'{urls[1]}',
-                'Source_name': names[1],
-                'Source_chnl': channels[1],
-                'Cmp_TimeStamp': f'{int(m1)}:{int(s1)}',
-                'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
-        print(info, score)
+            info = {'Cmpl_url': f'{urls[0]}',
+                    'Cmp_name': names[0],
+                    'Cmp_chnl': channels[0],
+                    'Source_url': f'{urls[1]}',
+                    'Source_name': names[1],
+                    'Source_chnl': channels[1],
+                    'Cmp_TimeStamp': f'{int(m1)}:{int(s1)}',
+                    'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
+            print(info, score)
 
-        record_df = record_df.append(info, ignore_index=True)
+            record_df = record_df.append(info, ignore_index=True)
     return record_df
 
 
