@@ -12,22 +12,20 @@ import imagehash as ih
 
 
 class Video:
-    def __init__(self, file_name, fps=None, starting_frame=None, ending_frame=None, as_grey=False):
-        self.starting_frame = starting_frame
-        self.ending_frame = ending_frame
+    def __init__(self, file_name, fps=None, as_grey=False):
         self.grey = as_grey
         md = ffprobe(file_name)['video']
         self.file_name = file_name
         self._metadata = md
         self.duration = float(md['@duration'])
         fr, ps = md['@avg_frame_rate'].split('/')
-        self.original_fps = int(fr) / int(ps)
-        self.fps = fps if fps else  self.original_fps
+        self.original_fps = int(fr) // int(ps)
+        self.fps = fps if fps else self.original_fps
 
     def __iter__(self):
         vgen = vreader(self.file_name, as_grey=self.grey)
         skip = int(self.original_fps // self.fps)
-        return iter(islice(vgen, self.starting_frame, self.ending_frame, skip))
+        return iter(islice(vgen, None, None, skip))
 
     def get_frames(self):
         return list(iter(self))
