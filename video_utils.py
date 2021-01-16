@@ -7,7 +7,6 @@ import cv2
 # from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, vreader, ffprobe
 from itertools import islice
-# from decord import VideoReader, cpu
 
 import imagehash as ih
 
@@ -98,25 +97,6 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
 
     print("--- %s seconds ---" % (time() - start))
     return timestamps
-
-
-
-def load_video_decord(vid_info):
-    """Load the video object, return with its name."""
-    vid_path = vid_info[0]
-    vid_url = vid_info[1]
-    vid = VideoReader(vid_path, ctx=cpu(0))
-    return [vid, vid_path, vid_url]
-
-
-def get_frames_decord(vid) -> list:
-    """Get all the frames in a video object using Decord, return as a list."""
-    frame_list = []
-    for i in range(0, len(vid), 30):
-        frame = vid[i]
-        frame_list.append(frame)
-
-    return frame_list
 
 
 def get_frames(vid, vid_name) -> list:
