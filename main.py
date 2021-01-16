@@ -1,9 +1,11 @@
 from os import chdir, getcwd
 from pathlib import Path
+import argparse
 
 from video_utils import video_init, compare_videos_parallel
 from csv_handle import read_csv, save_csv, record_similarity
 from downloader import get_video
+import config
 
 
 def change_path():
@@ -31,7 +33,7 @@ def run(csv_path, output_path=""):
 
             # Do the comparison
             time_stamps = compare_videos_parallel(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
-            print(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
+            if not config.QUIET: print(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
 
             record_df = record_similarity(time_stamps,
                                           [meta_cmp['url'], meta_src['url']],
@@ -43,9 +45,9 @@ def run(csv_path, output_path=""):
                 final_csv_name = save_csv(record_df, f'{currnt_path}/{output_path}')
             else:
                 final_csv_name = save_csv(record_df, f'{currnt_path}/{meta_cmp["name"]}_results.csv')
-            print('Results saved to ', final_csv_name)
+            if not config.QUIET: print('Results saved to ', final_csv_name)
 
-    print("All done. Exiting...")
+    if not config.QUIET: print("All done. Exiting...")
     return None
 
 
@@ -53,4 +55,28 @@ def run(csv_path, output_path=""):
 
 
 if __name__ == '__main__':
-    run(csv_path=["/home/sadegh/video_search_test.csv"])
+    parser = argparse.ArgumentParser()
+    parser.add_argument('input', nargs='+', help='The csv file to read')
+    parser.add_argument('-o', '--output', help='The path to save the results')
+    parser.add_argument('-q', '--quiet', nargs='?', default='talkcyka', help='Be verbose')
+    parser.add_argument('-v', '--verbose', nargs='?', default='shutupcyka', help='Be so verbose')
+
+    args = parser.parse_args()
+
+    input_path = args.input
+    output_path = args.output
+    if args.quiet is None:
+        config.QUIET = True
+    elif args.quiet == 'talkcyka':
+        config.QUIET = False
+    else:
+        raise Exception('Don\'t pass anything to -q argument')
+    if args.verbose is None:
+        config.VERBOSE = True
+    elif args.verbose == 'shutupcyka':
+        config.VERBOSE = False
+    else:
+        raise Exception('Don\'t pass anything to -v argument')
+
+    run(input_path, output_path)
+    # run(csv_path=["/home/sadegh/video_search_test.csv"])
