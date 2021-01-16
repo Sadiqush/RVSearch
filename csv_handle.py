@@ -37,7 +37,7 @@ def _check_and_rename(file_name, add=0) -> str:
     """Used for rename duplicate files to avoid overwriting."""
     if add != 0:
         name_split = file_name.split(".")  # e.g.: .mp4
-        renamed = f"{name_split[0]}_({str(add)})"
+        renamed = f"{name_split[0]}_{str(add)}"
         file_name = ".".join([renamed, name_split[1]])
     if Path(file_name).exists():
         file_name = _check_and_rename(file_name, add=+1)

@@ -40,9 +40,9 @@ def run(csv_path, output_path=""):
 
             # TODO: maybe save in comparing?
             if output_path:
-                final_csv_name = save_csv(record_df, f'{currnt_path}/{meta_cmp["name"]}_results.csv')
-            else:
                 final_csv_name = save_csv(record_df, f'{currnt_path}/{output_path}')
+            else:
+                final_csv_name = save_csv(record_df, f'{currnt_path}/{meta_cmp["name"]}_results.csv')
             print('Results saved to ', final_csv_name)
 
     print("All done. Exiting...")
