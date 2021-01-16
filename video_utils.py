@@ -19,9 +19,9 @@ class Video:
         md = ffprobe(file_name)['video']
         self.file_name = file_name
         self._metadata = md
-        self.original_frame_n = int(md['@nb_frames'])
         self.duration = float(md['@duration'])
-        self.original_fps = int(self.original_frame_n / self.duration)
+        fr, ps = md['@avg_frame_rate'].split('/')
+        self.original_fps = int(fr) / int(ps)
         self.fps = fps if fps else  self.original_fps
 
     def __iter__(self):
@@ -45,8 +45,10 @@ def video_init(vid_info):
 
     # Save frames into RAM
     print(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
-    frames = Video(vid_meta['path']).get_frames()
-
+    start = time()
+    frames = Video(vid_meta['path'], fps=1).get_frames()
+    # frames = get_frames(vid, vid_meta['path'])
+    print(time() - start)
     return frames, vid_meta
 
 
