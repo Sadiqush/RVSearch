@@ -15,8 +15,12 @@ def _load_csv(inpath):
 def read_csv(inpath):
     """Reads the parts of the csv file and returns them."""
     df = _load_csv(inpath)
-    compilation = df["Compilation"]
+    compilation = df["Compilation"].tolist()
     sources = df["Source"].tolist()
+    # src4cmp = []
+    # for source in sources:
+    #     source = source.split("\\n")
+    #     src4cmp.append(source)
     return compilation, sources
 
 

@@ -12,20 +12,12 @@ def change_path():
     chdir(getcwd() + "/tmp")
 
 
-def extract_urls(csv_path):
-    """Extract URLs cleanly from .csv file"""
-    # TODO: Send it to csv_handle
-    compilation, sources = read_csv(csv_path)
-    compilation_list = [url for url in compilation]
-    source_list = [url for url in sources]
-    return compilation_list, source_list
-
-
 def run(csv_path):
     """Main function: read csv, download videos, compare them, save results."""
     currnt_path = getcwd()
     change_path()
-    compilation_list, source_list = extract_urls(csv_path)
+    compilation_list, source_list = read_csv(csv_path)
+
     for com_url in compilation_list:
         # TODO: each source should ba a separated thread
         for source_url in source_list:
@@ -49,6 +41,7 @@ def run(csv_path):
             # TODO: maybe save in comparing?
             final_csv_name = save_csv(record_df, f'{currnt_path}/{meta_cmp["name"]}_results.csv')
             print('Results saved to ', final_csv_name)
+
     print("All done. Exiting...")
     return None
 
