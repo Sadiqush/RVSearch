@@ -3,8 +3,6 @@ import multiprocessing as mp
 
 import numpy as np
 import cv2
-# from skimage.metrics import normalized_root_mse as n_rmse
-# from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, vreader, ffprobe
 from itertools import islice
 
@@ -79,7 +77,7 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
     print('**Comparing started**')
     for s_frame in source_frames:
         current_frame_s += source_fps  # Go up 1 second
-        current_frame_t = 0   # One target done, now reset
+        current_frame_t = 0  # One target done, now reset
         for t_frame in target_frames:
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
@@ -169,29 +167,29 @@ def compare_hash_frames(frame_0, frame_1, hash_len=8):
     return 1 - dif / hl
 
 
-def compare_frames(image_a, image_b, gray=True, debug=False):
-    """Compare two images using SSIM algorithm, return the score."""
+def compare_check(image_a, image_b, gray=True):
+    """Compare two images using different algorithms, return the score."""
+    from skimage.metrics import normalized_root_mse as n_rmse
+    from skimage.metrics import structural_similarity as ssim
     if image_a.shape != image_b.shape:
         raise Exception("Not compatible shape to start comparing.")
     if gray:
         image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
         image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
-    if debug:
-        # Some other scores, print everything.
-        phash_score = compare_hash_frames(image_a, image_b, hash_len=12)
-        obj_score = compare_objects(image_a, image_b)
-        psnr = cv2.PSNR(image_a, image_b)
-        nrmse_score = 1 - n_rmse(image_a, image_b)
+    ssim_score = ssim(image_a, image_b,
+                      multichannel=True,
+                      use_sample_covariance=False)
+    phash_score = compare_hash_frames(image_a, image_b, hash_len=12)
+    obj_score = compare_objects(image_a, image_b)
+    psnr = cv2.PSNR(image_a, image_b)
+    nrmse_score = 1 - n_rmse(image_a, image_b)
 
-        # print("SSIM: {}".format(score))
-        print("pHash-12: ", phash_score)
-        print('obj_det: ', obj_score)
-        print('PSNR: ', psnr)
-        print('NRMSE: ', nrmse_score)
-    else:
-        score = 1 - n_rmse(image_a, image_b)
-
-    return score
+    print("SSIM: {}".format(ssim_score))
+    print("pHash-12: ", phash_score)
+    print('obj_det: ', obj_score)
+    print('PSNR: ', psnr)
+    print('NRMSE: ', nrmse_score)
+    return None
 
 
 def check_score(score, threshold=0.75):
@@ -213,8 +211,8 @@ def compare_objects(img1, img2):
 
 def bf_matcher(des1, des2):
     bf = cv2.BFMatcher()
-    matches = bf.knnMatch(des1,des2, k=2)
-    return sum(1 for x in matches if len(x) == 2 and x[0].distance < 0.7*x[1].distance)
+    matches = bf.knnMatch(des1, des2, k=2)
+    return sum(1 for x in matches if len(x) == 2 and x[0].distance < 0.7 * x[1].distance)
 
 
 def flann_matcher(des1, des2):
@@ -226,11 +224,12 @@ def flann_matcher(des1, des2):
     search_params = dict(checks=50)  # or pass empty dictionary
     flann = cv2.FlannBasedMatcher(index_params, search_params)
     matches = flann.knnMatch(des1, des2, k=2)
-    return sum(1 for x in matches if len(x) == 2 and x[0].distance < 0.7*x[1].distance)
+    return sum(1 for x in matches if len(x) == 2 and x[0].distance < 0.7 * x[1].distance)
 
 
 if __name__ == "__main__":
     from main import change_path
+
     change_path()
     # video_name_2 = get_video("https://www.youtube.com/watch?v=-XgD-pUFKaI")
     # video_name = get_video('https://www.youtube.com/watch?v=GpVXn7vswOM')
