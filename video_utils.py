@@ -1,13 +1,15 @@
 from time import time
 
 import numpy as np
-import imagehash as ih
 import cv2
 from skimage.metrics import normalized_root_mse as n_rmse
 from skimage.metrics import structural_similarity as ssim
 from skvideo.io import vread, vreader, ffprobe
 from itertools import islice
 from decord import VideoReader, cpu
+
+import imagehash as ih
+
 
 class Video:
     def __init__(self, file_name, fps=None, starting_frame=None, ending_frame=None, as_grey=False):
@@ -30,6 +32,7 @@ class Video:
     def get_frames(self):
         return list(iter(self))
 
+
 def video_init(vid_info):
     # TODO: return actual name not ID
     vid_meta = {'path': vid_info[0],
@@ -42,7 +45,7 @@ def video_init(vid_info):
 
     # Save frames into RAM
     print(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
-    frames = get_frames(vid, vid_meta['path'])
+    frames = Video(vid_meta['path']).get_frames()
 
     return frames, vid_meta
 
@@ -62,13 +65,15 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
         for t_frame in target_frames:
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
-            score = compare_hash_frames(s_frame, t_frame, hash_len=12)
-            if check_score(score, threshold=0.75):
+            # score = compare_hash_frames(s_frame, t_frame, hash_len=12)
+            score = compare_objects(s_frame, t_frame)
+            if check_score(score, threshold=150):
                 # Record its timestamp
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
                 m2, s2 = divmod((current_frame_t / target_fps), 60)
                 timestamps.append([[m1, s1], [m2, s2], score])
-                print(f"{timestamps[0][0]} - {timestamps[0][1]} score: {timestamps[0][2]}")
+                print(timestamps)
+                # print(f"{timestamps[0][0]}:{timestamps[0][1]} - {timestamps[1][0]}:{timestamps[1][1]} score: {timestamps[0][2]}")
                 print("--- %s seconds ---" % (time() - start))
                 break  # First similarity in video, break
 
@@ -173,12 +178,14 @@ def compare_frames(image_a, image_b, gray=True, debug=False):
         image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
     if debug:
         # Some other scores, print everything.
-        phash_score = compare_hash_frames(image_a, image_b, hash_len=4)
+        phash_score = compare_hash_frames(image_a, image_b, hash_len=12)
+        obj_score = compare_objects(image_a, image_b)
         psnr = cv2.PSNR(image_a, image_b)
         nrmse_score = 1 - n_rmse(image_a, image_b)
 
         # print("SSIM: {}".format(score))
-        print("pHash-4: ", phash_score)
+        print("pHash-12: ", phash_score)
+        print('obj_det: ', obj_score)
         print('PSNR: ', psnr)
         print('NRMSE: ', nrmse_score)
     else:
@@ -195,6 +202,33 @@ def check_score(score, threshold=0.75):
         return False
 
 
+def compare_objects(img1, img2):
+    orb = cv2.ORB_create(nfeatures=256, scaleFactor=1.01)
+    kp1, des1 = orb.detectAndCompute(img1, None)
+    kp2, des2 = orb.detectAndCompute(img2, None)
+    # score = flann_matcher(des1, des2)
+    score = bf_matcher(des2, des1)
+    return score
+
+
+def bf_matcher(des1, des2):
+    bf = cv2.BFMatcher()
+    matches = bf.knnMatch(des1,des2, k=2)
+    return sum(1 for x in matches if len(x) == 2 and x[0].distance < 0.7*x[1].distance)
+
+
+def flann_matcher(des1, des2):
+    FLANN_INDEX_LSH = 6
+    index_params = dict(algorithm=FLANN_INDEX_LSH,
+                        table_number=6,  # 12
+                        key_size=12,  # 20
+                        multi_probe_level=1)  # 2
+    search_params = dict(checks=50)  # or pass empty dictionary
+    flann = cv2.FlannBasedMatcher(index_params, search_params)
+    matches = flann.knnMatch(des1, des2, k=2)
+    return sum(1 for x in matches if len(x) == 2 and x[0].distance < 0.7*x[1].distance)
+
+
 if __name__ == "__main__":
     from main import change_path
     change_path()
@@ -208,15 +242,18 @@ if __name__ == "__main__":
 
     # video1_info = get_video("https://www.youtube.com/watch?v=u-jvhik9Lwk")
     # video2_info = get_video("https://www.youtube.com/watch?v=_-uC9nkcd0w")
-    vid1, vid1_name, vid1_url = load_video(["u-jvhik9Lwk.mp4", "x"])
-    vid2, vid2_name, vid2_url = load_video(["_-uC9nkcd0w.mp4", "x"])
+    # vid1, vid1_name, vid1_url = load_video(["u-jvhik9Lwk.mp4", "x"])
+    # vid2, vid2_name, vid2_url = load_video(["_-uC9nkcd0w.mp4", "x"])
     # compare_videos(vid1, vid2)
-    print(get_video_fps("u-jvhik9Lwk.mp4"))
-    print(get_video_fps("_-uC9nkcd0w.mp4"))
-    frame_n = 30
-    frame_1 = get_the_frame(vid1, 1450)
-    frame_2 = get_the_frame(vid2, 1104)
-    cv2.imwrite(f'{vid1_name}_1450.jpg', frame_1)
-    cv2.imwrite(f'{vid2_name}_1104.jpg', frame_2)
-    compare_frames(frame_1, frame_2, debug=True)
-    print(compare_hash_frames(frame_1, frame_2, hash_len=128))
+    # print(get_video_fps("u-jvhik9Lwk.mp4"))
+    # print(get_video_fps("_-uC9nkcd0w.mp4"))
+    # frame_n = 30
+    # frame_1 = get_the_frame(vid1, 1450)
+    # frame_2 = get_the_frame(vid2, 1104)
+    # cv2.imwrite(f'{vid1_name}_1450.jpg', frame_1)
+    # cv2.imwrite(f'{vid2_name}_1104.jpg', frame_2)
+    # frame_1 = cv2.imread("GpVXn7vswOM.mp4_10.jpg")
+    # frame_2 = cv2.imread("GpVXn7vswOM.mp4_150.jpg")
+    # compare_frames(frame_1, frame_2, debug=True, gray=False)
+    # print(compare_hash_frames(frame_1, frame_2, hash_len=128))
+    print(type(ih.ImageHash(12)))
