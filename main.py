@@ -16,9 +16,10 @@ def run(csv_path):
     """Main function: read csv, download videos, compare them, save results."""
     currnt_path = getcwd()
     change_path()
-    compilation_list, source_list = read_csv(csv_path)
 
-    for com_url in compilation_list:
+    for csv in csv_path:
+        com_url, source_list = read_csv(csv)
+
         for source_url in source_list:
             # Downloading
             cmp_file = get_video(com_url)
