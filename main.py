@@ -12,7 +12,7 @@ def change_path():
     chdir(getcwd() + "/tmp")
 
 
-def run(csv_path):
+def run(csv_path, output_path=""):
     """Main function: read csv, download videos, compare them, save results."""
     currnt_path = getcwd()
     change_path()
@@ -39,7 +39,10 @@ def run(csv_path):
                                           [meta_cmp['channel'], meta_src['channel']])
 
             # TODO: maybe save in comparing?
-            final_csv_name = save_csv(record_df, f'{currnt_path}/{meta_cmp["name"]}_results.csv')
+            if output_path:
+                final_csv_name = save_csv(record_df, f'{currnt_path}/{meta_cmp["name"]}_results.csv')
+            else:
+                final_csv_name = save_csv(record_df, f'{currnt_path}/{output_path}')
             print('Results saved to ', final_csv_name)
 
     print("All done. Exiting...")
