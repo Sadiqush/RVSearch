@@ -7,6 +7,7 @@ from skvideo.io import vread, vreader, ffprobe
 from itertools import islice
 
 import imagehash as ih
+import params
 
 
 class Video:
@@ -17,11 +18,7 @@ class Video:
         self._metadata = md
         self.duration = float(md['@duration'])
         fr, ps = md['@avg_frame_rate'].split('/')
-<<<<<<< HEAD
-        self.original_fps = int(fr) / int(ps)
-=======
         self.original_fps = int(fr) // int(ps)
->>>>>>> GitHub/master
         self.fps = fps if fps else self.original_fps
 
     def __iter__(self):
@@ -34,21 +31,20 @@ class Video:
 
 
 def video_init(vid_info):
-    # TODO: return actual name not ID
     vid_meta = {'path': vid_info[0],
                 'name': vid_info[1],
                 'channel': vid_info[2],
                 'url': vid_info[3]}
-    # vid = cv2.VideoCapture(vid_meta['path'])   # TODO: GPU accelrate
+    vid = cv2.VideoCapture(vid_meta['path'])   # TODO: GPU accelrate
     fps = get_video_fps(vid_meta['path'])
     vid_meta['fps'] = fps
 
     # Save frames into RAM
-    print(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
+    if not params.quiet: print(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
     start = time()
     frames = Video(vid_meta['path'], fps=1).get_frames()
-    # frames = get_frames(vid, vid_meta['path'])
-    print(time() - start)
+    frames = get_frames(vid, vid_meta['path'])
+    if not params.quiet: print(time() - start)
     return frames, vid_meta
 
 
@@ -59,7 +55,6 @@ def compare_videos_parallel(source_frames, source_fps, target_frames, target_fps
     subs = [source_frames[i:i + n] for i in range(0, len(source_frames), n)]
     args = [(sub, source_fps, target_frames, target_fps) for sub in subs]
     results = pool.starmap(compare_videos, args)
-    print('results are: ', results)
     ret = []
     for res in results:
         if res:
@@ -69,17 +64,17 @@ def compare_videos_parallel(source_frames, source_fps, target_frames, target_fps
 
 def compare_videos(source_frames, source_fps, target_frames, target_fps):
     """Get two video object, start comparing them frame by frame. Linear Search algorithm."""
-    print('Getting ready to start comparison process')
+    if not params.quiet: print('Getting ready to start comparison process')
 
     current_frame_s = 0
     current_frame_t = 0
     timestamps = []
     start = time()
 
-    print('**Comparing started**')
+    if not params.quiet: print('**Comparing started**')
     for s_frame in source_frames:
         current_frame_s += source_fps  # Go up 1 second
-        current_frame_t = 0  # One target done, now reset
+        current_frame_t = 0   # One target done, now reset
         for t_frame in target_frames:
             current_frame_t += target_fps  # Go up 1 second
             # score = compare_frames(s_frame, t_frame)
@@ -90,12 +85,13 @@ def compare_videos(source_frames, source_fps, target_frames, target_fps):
                 m1, s1 = divmod((current_frame_s / source_fps), 60)
                 m2, s2 = divmod((current_frame_t / target_fps), 60)
                 timestamps.append([[m1, s1], [m2, s2], score])
-                print(timestamps[-1])
-                # print(f"{timestamps[0][0]}:{timestamps[0][1]} - {timestamps[1][0]}:{timestamps[1][1]} score: {timestamps[0][2]}")
-                print("--- %s seconds ---" % (time() - start))
+                if params.verbose:
+                    print(timestamps[-1])
+                    # print(f"{timestamps[0][0]}:{timestamps[0][1]} - {timestamps[1][0]}:{timestamps[1][1]} score: {timestamps[0][2]}")
+                    print("--- %s seconds ---" % (time() - start))
                 break  # First similarity in video, break
 
-    print("--- %s seconds ---" % (time() - start))
+    if params.verbose: print("--- %s seconds ---" % (time() - start))
     return timestamps
 
 
@@ -169,7 +165,7 @@ def compare_hash_frames(frame_0, frame_1, hash_len=8):
     return 1 - dif / hl
 
 
-def compare_check(image_a, image_b, gray=True):
+def compare_checkf(image_a, image_b, gray=True):
     """Compare two images using different algorithms, return the score."""
     from skimage.metrics import normalized_root_mse as n_rmse
     from skimage.metrics import structural_similarity as ssim

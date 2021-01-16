@@ -1,6 +1,8 @@
 import youtube_dl
 from pathlib import Path
 
+import params
+
 
 def get_video(url) -> list[str, str]:
     """Does all the process related to download and saving."""
@@ -8,7 +10,7 @@ def get_video(url) -> list[str, str]:
     # TODO: if above 30min
     id, name, channel = _get_info(url)
     if Path(id).exists():
-        print("** Skipping download, file already exists")
+        if not params.quiet: print("** Skipping download, file already exists")
     else:
         response = download(url)
     return [id, name, channel, url]
@@ -18,10 +20,11 @@ def download(url):
     """Downloads a no-audio mp4 from youtube."""
     ydl_opts = {
         'outtmpl': '%(id)s.%(ext)s',
-        'format': 'bestvideo[height<=144][ext=mp4]',   # Best video, but no better than 144p
-        'logger': MyLogger(),
-        'progress_hooks': [_progress]
+        'format': 'bestvideo[height<=144][ext=mp4]'   # Best video, but no better than 144p
     }
+    if not params.quiet:
+        ydl_opts['logger'] = MyLogger()
+        ydl_opts['progress_hooks']: [_progress]
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         response = ydl.download([url])
     return response

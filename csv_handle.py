@@ -1,6 +1,8 @@
 import pandas as pd
 from pathlib import Path
 
+import params
+
 
 def _load_csv(inpath):
     """Loads the csv file and checks if the file is ok."""
@@ -51,7 +53,6 @@ def record_similarity(timestamps, urls, names, channels):
     for thread_res in timestamps:
         for stamp in thread_res:
             # TODO: Sum near timestamps together
-            print(stamp)
             m1, s1 = stamp[0][0], stamp[0][1]
             m2, s2 = stamp[1][0], stamp[1][1]
             score = stamp[2]
@@ -64,7 +65,7 @@ def record_similarity(timestamps, urls, names, channels):
                     'Source_chnl': channels[1],
                     'Cmp_TimeStamp': f'{int(m1)}:{int(s1)}',
                     'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
-            print(info, score)
+            if params.verbose: print(info, score)
 
             record_df = record_df.append(info, ignore_index=True)
     return record_df
