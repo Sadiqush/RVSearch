@@ -22,7 +22,7 @@ def run(csv_path, output_path=""):
 
         for source_url in source_list:
             # Downloading
-            cmp_file = get_video(com_url)
+            cmp_file = get_video(com_url[0])
             src_file = get_video(source_url)
 
             # Getting things ready
@@ -53,4 +53,4 @@ def run(csv_path, output_path=""):
 
 
 if __name__ == '__main__':
-    run(csv_path="/home/sadegh/video_search_test.csv")
+    run(csv_path=["/home/sadegh/video_search_test.csv"])
