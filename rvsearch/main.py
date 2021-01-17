@@ -52,8 +52,3 @@ def run(csv_path, output_path=""):
 
 
 # TODO: add logger
-
-
-if __name__ == '__main__':
-    pass
-    # run(csv_path=["/home/sadegh/video_search_test.csv"])
