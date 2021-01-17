@@ -40,5 +40,5 @@ setup(
 
     python_requires='>= 3',
 
-    entry_points={'console_scripts': ['rvreader = rvreader.run:run']}
+    entry_points={'console_scripts': ['rvsearch = rvsearch.run:run']}
 )
