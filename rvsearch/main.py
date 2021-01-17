@@ -20,6 +20,7 @@ def main(csv_path, output_path=""):
     change_path()
 
     for csv in csv_path:
+        csv = Path(currnt_path) / csv
         com_url, source_list = read_csv(csv)
 
         for source_url in source_list:
