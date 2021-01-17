@@ -21,7 +21,7 @@ setup(
     include_package_data=True,
 
     # Details
-    # url="http://pypi.python.org/pypi/...",
+    url="http://pypi.org/project/rvsearch",
 
     # license
     description="GPLv3",
