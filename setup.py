@@ -3,7 +3,7 @@ import setuptools
 
 setup(
     # Application name:
-    name="RVSearch",
+    name="rvsearch",
 
     # Version number (initial):
     version="1.0.0",
@@ -26,7 +26,7 @@ setup(
     # license
     description="GPLv3",
 
-    # long_description=open("README.txt").read(),
+    long_description=open("README.md").read(),
 
     # Dependent packages (distributions)
     install_requires=[
