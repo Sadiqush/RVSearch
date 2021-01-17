@@ -2,3 +2,5 @@ pandas~=1.2.0
 youtube_dl
 opencv-python~=4.5.1.48
 numpy~=1.19.5
+setuptools
+scikit-video

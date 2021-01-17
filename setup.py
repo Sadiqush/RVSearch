@@ -35,7 +35,7 @@ setup(
         "opencv-python",
         "numpy",
         "setuptools",
-        "skvideo"
+        "scikit-video"
     ],
 
     python_requires='>= 3'
