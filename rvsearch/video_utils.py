@@ -24,7 +24,7 @@ def video_init(vid_info):
         print(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
         start = time()
     frames = get_frames(vid, vid_meta['path'])
-    if not vconf.QUIET: print(time() - start)
+    if vconf.VERBOSE: print(time() - start)
     return frames, vid_meta
 
 
@@ -35,6 +35,7 @@ def compare_videos_parallel(source_frames, source_fps, target_frames, target_fps
     n = int(len(source_frames) / cpus)
     subs = [source_frames[i:i + n] for i in range(0, len(source_frames), n)]
     args = [(sub, source_fps, target_frames, target_fps) for sub in subs]
+    if vconf.VERBOSE: print(f'you\'re having {cpus} process simultaneously')
     results = pool.starmap(compare_videos, args)
     ret = []
     for res in results:
@@ -45,14 +46,13 @@ def compare_videos_parallel(source_frames, source_fps, target_frames, target_fps
 
 def compare_videos(source_frames, source_fps, target_frames, target_fps):
     """Get two video object, start comparing them frame by frame. Linear Search algorithm."""
-    if not vconf.QUIET: print('Getting ready to start comparison process')
 
     current_frame_s = 0
     current_frame_t = 0
     timestamps = []
     if vconf.VERBOSE: start = time()
 
-    if not vconf.QUIET: print('**Comparing started**')
+    if vconf.VERBOSE: print('compare')
     for s_frame in source_frames:
         current_frame_s += source_fps  # Go up 1 second
         current_frame_t = 0   # One target done, now reset

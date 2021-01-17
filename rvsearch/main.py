@@ -29,10 +29,12 @@ def main(csv_path, output_path=""):
             src_file = get_video(source_url)
 
             # Getting things ready
+            if not vconf.QUIET: print('Getting ready to start comparison process')
             frames_cmp, meta_cmp = video_init(cmp_file)
             frames_src, meta_src = video_init(src_file)
 
             # Do the comparison
+            if not vconf.QUIET: print('**Comparing started**')
             time_stamps = compare_videos_parallel(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
             if not vconf.QUIET: print(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
 

@@ -16,6 +16,7 @@ def run():
 
     input_path = args.input
     output_path = args.output
+
     if args.quiet is None:
         vconf.QUIET = True
     elif args.quiet == 'talkcyka':
@@ -28,5 +29,7 @@ def run():
         vconf.VERBOSE = False
     else:
         raise Exception('Don\'t pass anything to -v argument')
+    assert not (vconf.QUIET and vconf.VERBOSE), \
+        "Tool can\'t be quiet and verbose at the same time"
 
     sys.exit(main(input_path, output_path))
