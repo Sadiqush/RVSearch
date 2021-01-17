@@ -14,7 +14,7 @@ def change_path():
     os.chdir(os.getcwd() + "/tmp")
 
 
-def run(csv_path, output_path=""):
+def main(csv_path, output_path=""):
     """Main function: read csv, download videos, compare them, save results."""
     currnt_path = os.getcwd()
     change_path()

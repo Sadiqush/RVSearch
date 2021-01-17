@@ -2,10 +2,10 @@ import argparse
 import sys
 
 import rvsearch.config as vconf
-from rvsearch.main import run
+from rvsearch.main import main
 
 
-if __name__ == "__main__":
+def run():
     parser = argparse.ArgumentParser()
     parser.add_argument('input', nargs='+', help='The csv file to read')
     parser.add_argument('-o', '--output', help='The path to save the results')
@@ -29,4 +29,4 @@ if __name__ == "__main__":
     else:
         raise Exception('Don\'t pass anything to -v argument')
 
-    sys.exit(run(input_path, output_path))
+    sys.exit(main(input_path, output_path))
