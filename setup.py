@@ -1,4 +1,5 @@
 from distutils.core import setup
+import setuptools
 
 setup(
     # Application name:
@@ -33,6 +34,7 @@ setup(
         "youtube_dl",
         "opencv-python",
         "numpy",
+        "setuptools"
     ],
 
     python_requires='>= 3'
