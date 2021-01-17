@@ -34,7 +34,8 @@ setup(
         "youtube_dl",
         "opencv-python",
         "numpy",
-        "setuptools"
+        "setuptools",
+        "skvideo"
     ],
 
     python_requires='>= 3'

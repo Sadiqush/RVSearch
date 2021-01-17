@@ -3,6 +3,7 @@ import multiprocessing as mp
 
 import numpy as np
 import cv2
+from skvideo.io import ffprobe
 
 import rvsearch.imagehash as ih
 import rvsearch.config as vconf
