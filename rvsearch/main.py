@@ -14,6 +14,13 @@ def change_path():
     os.chdir(os.getcwd() + "/tmp")
 
 
+def clean():
+    """Remove the tmp directory when you're done"""
+    dir_of_executable = os.path.dirname(__file__)
+    Path.rmdir(Path(dir_of_executable) / "tmp/")
+    return None
+
+
 def main(csv_path, output_path=""):
     """Main function: read csv, download videos, compare them, save results."""
     currnt_path = os.getcwd()
