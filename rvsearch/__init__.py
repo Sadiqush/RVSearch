@@ -1,2 +1,2 @@
 __version__ = '1.0.2'
-__description__ = 'Searchs over YouTube for similarities between videos'
+__description__ = 'Tool to reverse search videos on YouTube based on frame similarities found'
