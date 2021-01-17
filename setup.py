@@ -14,6 +14,8 @@ setup(
     # Packages
     packages=["rvsearch"],
 
+    keywords=["rvsearch", "youtube", "video", "reverse_search"],
+
     # Include additional files into the package
     include_package_data=True,
 
@@ -32,4 +34,6 @@ setup(
         "opencv-python",
         "numpy",
     ],
+
+    python_requires='>= 3'
 )
