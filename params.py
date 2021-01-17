@@ -1,2 +1,0 @@
-quiet = False
-verbose = False
