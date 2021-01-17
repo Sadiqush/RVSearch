@@ -1,4 +1,4 @@
-from distutils.core import setup see
+from distutils.core import setup
 import setuptools
 
 setup(
