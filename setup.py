@@ -18,10 +18,10 @@ setup(
     include_package_data=True,
 
     # Details
-    url="http://pypi.python.org/pypi/...",
+    # url="http://pypi.python.org/pypi/...",
 
     # license
-    description="Useful towel-related stuff.",
+    description="GPLv3",
 
     # long_description=open("README.txt").read(),
 
