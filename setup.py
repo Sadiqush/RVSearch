@@ -1,4 +1,4 @@
-from distutils.core import setup
+from distutils.core import setup see
 import setuptools
 
 setup(
@@ -24,7 +24,8 @@ setup(
     url="http://pypi.org/project/rvsearch",
 
     # license
-    description="GPLv3",
+    license="GLPv3",
+    description="Tool to reverse search videos on YouTube based on frame similarities found",
 
     long_description=open("README.md").read(),
     long_description_content_type='text/markdown',
