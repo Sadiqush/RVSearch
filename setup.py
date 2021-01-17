@@ -38,5 +38,7 @@ setup(
         "scikit-video"
     ],
 
-    python_requires='>= 3'
+    python_requires='>= 3',
+
+    entry_points={'console_scripts': ['rvreader = rvreader.run:run']}
 )
