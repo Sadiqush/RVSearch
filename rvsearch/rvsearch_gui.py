@@ -105,7 +105,7 @@ class UiMainWindow(threading.Thread):
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
-        name, _ = QtWidgets.QFileDialog.getOpenFileName()
+        name, _ = QtWidgets.QFileDialog.getOpenFileName(filter="Text files (*.csv *.txt)")
         if name:
             self.csvpath_input.setText(_translate("MainWindow", name))
         return None
