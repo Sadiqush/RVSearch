@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>682</width>
-    <height>539</height>
+    <height>603</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,6 +22,12 @@
       <width>441</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="placeholderText">
+     <string>File</string>
     </property>
    </widget>
    <widget class="QLabel" name="csvpath">
@@ -53,21 +59,65 @@
    <widget class="QTextBrowser" name="log">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>70</y>
-      <width>681</width>
-      <height>201</height>
+      <x>20</x>
+      <y>140</y>
+      <width>641</width>
+      <height>211</height>
      </rect>
     </property>
    </widget>
    <widget class="QTextBrowser" name="output">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>280</y>
-      <width>681</width>
-      <height>211</height>
+      <x>70</x>
+      <y>390</y>
+      <width>591</width>
+      <height>171</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="start_button">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>110</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="stop_button">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>110</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>460</y>
+      <width>57</width>
+      <height>15</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Output:</string>
     </property>
    </widget>
   </widget>
@@ -113,5 +163,86 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>path_open</sender>
+   <signal>clicked()</signal>
+   <receiver>path_open</receiver>
+   <slot>animateClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>590</x>
+     <y>70</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>590</x>
+     <y>70</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>actionExit</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpen</sender>
+   <signal>triggered()</signal>
+   <receiver>actionOpen</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>start_button</sender>
+   <signal>clicked()</signal>
+   <receiver>start_button</receiver>
+   <slot>animateClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>289</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>289</x>
+     <y>141</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stop_button</sender>
+   <signal>clicked()</signal>
+   <receiver>stop_button</receiver>
+   <slot>animateClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>379</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>379</x>
+     <y>141</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
