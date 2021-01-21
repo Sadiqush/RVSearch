@@ -7,7 +7,7 @@ from rvsearch.main import MainThread
 
 
 class UiMainWindow(threading.Thread):
-    def __init__(self, qtlog=[]):
+    def __init__(self):
         threading.Thread.__init__(self)
 
     def retranslateUi(self, MainWindow):
