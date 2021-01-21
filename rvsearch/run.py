@@ -2,15 +2,15 @@ import argparse
 import sys
 
 import rvsearch.config as vconf
-from rvsearch.main import main
+from rvsearch.main import MainThread
 
 
 def run():
     parser = argparse.ArgumentParser()
     parser.add_argument('input', nargs='+', help='The csv file to read')
     parser.add_argument('-o', '--output', help='The path to save the results')
-    parser.add_argument('-q', '--quiet', dest='quiet', nargs='?', default='talkcyka', help='Be quiet')
-    parser.add_argument('-v', '--verbose', dest='verbose', nargs='?', default='shutupcyka', help='Be verbose')
+    parser.add_argument('-q', '--quiet', dest='QUIET', nargs='?', default='talkcyka', help='Be quiet')
+    parser.add_argument('-v', '--verbose', dest='VERBOSE', nargs='?', default='shutupcyka', help='Be verbose')
 
     args = parser.parse_args()
 
@@ -32,4 +32,8 @@ def run():
     assert not (vconf.QUIET and vconf.VERBOSE), \
         "Tool can\'t be quiet and verbose at the same time"
 
-    sys.exit(main(input_path, output_path))
+    sys.exit(MainThread.main(input_path, output_path))
+
+
+if __name__ == "__main__":
+    run()
