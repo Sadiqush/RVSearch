@@ -2,9 +2,9 @@ import os
 from pathlib import Path
 import threading
 
-# from rvsearch.video_utils import video_init, compare_videos_parallel
-# from rvsearch.csv_handle import read_csv, save_csv, record_similarity
-# from rvsearch.downloader import get_video
+from rvsearch.video_utils import Video
+from rvsearch.csv_handle import read_csv, save_csv, record_similarity
+from rvsearch.downloader import get_video
 import rvsearch.config as vconf
 from rvsearch.logger import Logger as logger
 
@@ -14,6 +14,10 @@ class MainThread(threading.Thread):
         threading.Thread.__init__(self)
         self.qtlog = qtlog
         self.currnt_path = os.getcwd()
+
+        video = Video(qtlog)
+        self.video_init = video.video_init
+        self.compare_videos_parallel = video.compare_videos_parallel
 
     def change_path(self):
         """Change working directory to a temporary directory."""
@@ -36,7 +40,7 @@ class MainThread(threading.Thread):
         if not csv_path:  # TODO: run after you didn't put input
             logger.do_log('You have not provided any input', self.qtlog)
             self.clean()
-            return None
+            exit()
 
         for csv in csv_path:
             csv = Path(self.currnt_path) / csv
