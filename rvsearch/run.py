@@ -9,8 +9,8 @@ def run():
     parser = argparse.ArgumentParser()
     parser.add_argument('input', nargs='+', help='The csv file to read')
     parser.add_argument('-o', '--output', help='The path to save the results')
-    parser.add_argument('-q', '--quiet', nargs='?', default='talkcyka', help='Be quiet')
-    parser.add_argument('-v', '--verbose', nargs='?', default='shutupcyka', help='Be verbose')
+    parser.add_argument('-q', '--quiet', dest='quiet', nargs='?', default='talkcyka', help='Be quiet')
+    parser.add_argument('-v', '--verbose', dest='verbose', nargs='?', default='shutupcyka', help='Be verbose')
 
     args = parser.parse_args()
 
