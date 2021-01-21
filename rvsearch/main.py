@@ -17,7 +17,8 @@ class MainThread(threading.Thread):
 
         video = Video(qtlog)
         self.video_init = video.video_init
-        self.compare_videos_parallel = video.compare_videos_parallel
+        # self.compare_videos_parallel = video.compare_videos_parallel
+        self.compare_videos = video.compare_videos
 
     def change_path(self):
         """Change working directory to a temporary directory."""
@@ -53,12 +54,12 @@ class MainThread(threading.Thread):
 
                 # Getting things ready
                 if not vconf.QUIET: logger.do_log('Getting ready to start comparison process', self.qtlog)
-                frames_cmp, meta_cmp = video_init(cmp_file)
-                frames_src, meta_src = video_init(src_file)
+                frames_cmp, meta_cmp = self.video_init(cmp_file)
+                frames_src, meta_src = self.video_init(src_file)
 
                 # Do the comparison
                 if not vconf.QUIET: logger.do_log('**Comparing started**', self.qtlog)
-                time_stamps = compare_videos_parallel(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
+                time_stamps = self.compare_videos(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
                 if not vconf.QUIET:
                     logger.do_log(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished", self.qtlog)
 

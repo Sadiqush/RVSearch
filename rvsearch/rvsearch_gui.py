@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
+import threading
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from rvsearch.main import MainThread
 
 
-class UiMainWindow(object):
+class UiMainWindow(threading.Thread):
+    def __init__(self, qtlog=[]):
+        threading.Thread.__init__(self)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))

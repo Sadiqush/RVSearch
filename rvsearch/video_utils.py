@@ -120,7 +120,7 @@ class Video:
 
     def compare_hash_frames(self, frame_0, frame_1, hash_len=8):
         """pHash two images and return their difference to be used for comparing"""
-        h0, h1 = _hasher(frame_0, hash_len), _hasher(frame_1, hash_len)
+        h0, h1 = self._hasher(frame_0, hash_len), self._hasher(frame_1, hash_len)
         hl = hash_len ** 2
         dif = abs(h0 - h1)
         return 1 - dif / hl
@@ -129,6 +129,7 @@ class Video:
         """Compare two images using different algorithms, return the score."""
         from skimage.metrics import normalized_root_mse as n_rmse
         from skimage.metrics import structural_similarity as ssim
+
         if image_a.shape != image_b.shape:
             raise Exception("Not compatible shape to start comparing.")
         if gray:
