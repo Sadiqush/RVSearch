@@ -11,10 +11,26 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
+class UiMainWindow(object):
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.csvpath_edit.setPlaceholderText(_translate("MainWindow", "File"))
+        self.csvpath.setText(_translate("MainWindow", "Input file"))
+        self.path_open.setText(_translate("MainWindow", "Open"))
+        self.start_button.setText(_translate("MainWindow", "Start"))
+        self.stop_button.setText(_translate("MainWindow", "Stop"))
+        self.label.setText(_translate("MainWindow", "Output:"))
+        self.csvpath_2.setText(_translate("MainWindow", "Save as"))
+        self.csvpath_edit_2.setPlaceholderText(_translate("MainWindow", "File"))
+        self.menu.setTitle(_translate("MainWindow", "Menu"))
+        self.actionExit.setText(_translate("MainWindow", "Exit"))
+        self.actionOpen.setText(_translate("MainWindow", "Open"))
+        self.actionAbout.setText(_translate("MainWindow", "About"))
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(682, 603)
+        MainWindow.resize(682, 665)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.csvpath_edit = QtWidgets.QLineEdit(self.centralwidget)
@@ -22,29 +38,36 @@ class Ui_MainWindow(object):
         self.csvpath_edit.setText("")
         self.csvpath_edit.setObjectName("csvpath_edit")
         self.csvpath = QtWidgets.QLabel(self.centralwidget)
-        self.csvpath.setGeometry(QtCore.QRect(40, 40, 91, 20))
+        self.csvpath.setGeometry(QtCore.QRect(70, 40, 71, 20))
         self.csvpath.setObjectName("csvpath")
         self.path_open = QtWidgets.QToolButton(self.centralwidget)
         self.path_open.setGeometry(QtCore.QRect(570, 40, 41, 22))
         self.path_open.setObjectName("path_open")
         self.log = QtWidgets.QTextBrowser(self.centralwidget)
-        self.log.setGeometry(QtCore.QRect(20, 140, 641, 211))
+        self.log.setGeometry(QtCore.QRect(20, 210, 641, 211))
         self.log.setObjectName("log")
         self.output = QtWidgets.QTextBrowser(self.centralwidget)
-        self.output.setGeometry(QtCore.QRect(70, 390, 591, 171))
+        self.output.setGeometry(QtCore.QRect(70, 450, 591, 171))
         self.output.setObjectName("output")
         self.start_button = QtWidgets.QPushButton(self.centralwidget)
-        self.start_button.setGeometry(QtCore.QRect(250, 110, 80, 23))
+        self.start_button.setGeometry(QtCore.QRect(240, 180, 80, 23))
         self.start_button.setObjectName("start_button")
         self.stop_button = QtWidgets.QPushButton(self.centralwidget)
-        self.stop_button.setGeometry(QtCore.QRect(340, 110, 80, 23))
+        self.stop_button.setGeometry(QtCore.QRect(340, 180, 80, 23))
         self.stop_button.setObjectName("stop_button")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(10, 460, 57, 15))
+        self.label.setGeometry(QtCore.QRect(10, 520, 57, 15))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label.setFont(font)
         self.label.setObjectName("label")
+        self.csvpath_2 = QtWidgets.QLabel(self.centralwidget)
+        self.csvpath_2.setGeometry(QtCore.QRect(80, 70, 71, 20))
+        self.csvpath_2.setObjectName("csvpath_2")
+        self.csvpath_edit_2 = QtWidgets.QLineEdit(self.centralwidget)
+        self.csvpath_edit_2.setGeometry(QtCore.QRect(130, 70, 441, 21))
+        self.csvpath_edit_2.setText("")
+        self.csvpath_edit_2.setObjectName("csvpath_edit_2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 682, 20))
@@ -87,26 +110,12 @@ class Ui_MainWindow(object):
     def exit_program():
         exit()
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.csvpath_edit.setPlaceholderText(_translate("MainWindow", "File"))
-        self.csvpath.setText(_translate("MainWindow", "CSV file path:"))
-        self.path_open.setText(_translate("MainWindow", "Open"))
-        self.start_button.setText(_translate("MainWindow", "Start"))
-        self.stop_button.setText(_translate("MainWindow", "Stop"))
-        self.label.setText(_translate("MainWindow", "Output:"))
-        self.menu.setTitle(_translate("MainWindow", "Menu"))
-        self.actionExit.setText(_translate("MainWindow", "Exit"))
-        self.actionOpen.setText(_translate("MainWindow", "Open"))
-        self.actionAbout.setText(_translate("MainWindow", "About"))
-
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
+    ui = UiMainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
