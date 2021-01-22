@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 import threading
 
-from rvsearch.video_utils import Video
+from video_utils import Video
 from rvsearch.csv_handle import read_csv, save_csv, record_similarity
 from rvsearch.downloader import get_video
 import rvsearch.config as vconf
@@ -17,7 +17,7 @@ class MainThread(threading.Thread):
 
         video = Video(qtlog)
         self.video_init = video.video_init
-        # self.compare_videos_parallel = video.compare_videos_parallel
+        # self.compare_frames_parallel = video.compare_frames_parallel
         self.compare_videos = video.compare_videos
 
     def change_path(self):
