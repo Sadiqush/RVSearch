@@ -46,7 +46,7 @@ class Video:
 def compare_frames_generator(frames0, frames1, threshold=0.7, verbosity=Verbosity.NONE) -> tuple[int, int]:
     for i, f0 in enumerate(frames0):
         for j, f1 in enumerate(frames1):
-            score = compare_hash_frames(f0, f1, 16)
+            score = compare_hash_frames(f0, f1, 10)
             if score >= threshold:
                 if verbosity & Verbosity.LOW:
                     print(f"Frames {i} and {j} have {score} similarity")
@@ -61,8 +61,11 @@ def compare_frames(frames0, frames1, threshold=0.7, verbosity=Verbosity.NONE):
 
 def compare_frames_parallel(frames0, frames1, threshold=0.7, verbosity=Verbosity.NONE):
     """Slice the frames to equal parts and multiprocess-compare them"""
-    pool = mp.Pool()
     thread_num = mp.cpu_count()
+    if thread_num <= 2:
+        if verbosity: print(f"Not enough logical cores ({thread_num}); comparing without parallelism...")
+        return compare_frames(frames0, frames1, threshold, verbosity)
+    pool = mp.Pool()
     subs = [frames1[i:i + thread_num] for i in range(0, len(frames1), thread_num)]
     args = [(frames0, sub, threshold, verbosity) for sub in subs]
     if verbosity: print(f"Creating {thread_num} process for parallel comparing...")
@@ -95,4 +98,9 @@ if __name__ == '__main__':
     v0 = Video(r"C:\Users\abava\Desktop\[ThePruld] Im into the abyss.mp4", as_grey=True, fps=1)
     v1 = Video(r"C:\Users\abava\Desktop\15 Abnormally Large Animals That Actually Exist.mp4", as_grey=True, fps=1)
     frames0 = v0.get_frames()
-    compare_frames(v0.get_frames(), v1.get_frames(), 0.5, verbosity=Verbosity.LOW)
+    frames1 = v1.get_frames()
+    import time
+    print("now!")
+    tim = time.monotonic()
+    compare_frames(frames0, frames1, 0.7, verbosity=Verbosity.LOW)
+    print(time.monotonic() - tim)
