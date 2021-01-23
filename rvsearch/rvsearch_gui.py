@@ -2,11 +2,11 @@
 import threading
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QThreadPool, QThread
 
 
-class UiMainWindow(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
+class UiMainWindow:
+    pill2kill = threading.Event()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -93,20 +93,24 @@ class UiMainWindow(threading.Thread):
         self.path_open.clicked.connect(self.file_opener)  # Open button
         self.actionOpen.triggered.connect(self.file_opener)  # Open in menu
         self.actionExit.triggered.connect(self.exit_program)  # Exit in menu
-        self.start_button.clicked.connect(self.start_main)  # Start button
-        self.stop_button.clicked.connect(self.stop_button.animateClick)  # Stop button (not configed yet)
+        self.start_button.clicked.connect(self.thread_start)  # Start button
+        self.stop_button.clicked.connect(self.thread_stop)  # Stop button (not configed yet)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def start_main(self):
-        self.log.append('a tout le monde')
-        from rvsearch.main import MainThread
-        self.log.append('bbrrrrrrrrrruh')
+    @staticmethod
+    def thread_stop():
+        UiMainWindow.pill2kill.set()
+
+    def thread_start(self):
+        t = threading.Thread(target=self.start)
+        t.start()
+
+    def start(self):
+        self.log.append('started')
+        from rvsearch.main import CoreProcess
         input = self.csvpath_input.text()  # Path for csv input
         output = self.csvpath_output.text()  # Path for csv output
-        main_thrd = MainThread(self.log)
-        main_thrd.main([input], output)
-        return None
-        # threading.Thread(target=MainThread(self.log).main([input], output)).start()
+        CoreProcess(self.log).main([input], output)
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
@@ -129,4 +133,5 @@ if __name__ == "__main__":
     ui = UiMainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+    # threading.Thread(target=app.exec_()).start()
     sys.exit(app.exec_())

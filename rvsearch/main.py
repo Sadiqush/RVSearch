@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
-import threading
+import time
+
+from PyQt5.QtCore import pyqtSignal, QObject
 
 from rvsearch.video_utils import Video
 from rvsearch.csv_handle import read_csv, save_csv, record_similarity
@@ -9,13 +11,9 @@ import rvsearch.config as vconf
 from rvsearch.logger import Logger as logger
 
 
-class MainThread:
+class CoreProcess:
     def __init__(self, qtlog=[]):
-        # threading.Thread.__init__(self)
         self.qtlog = qtlog
-        print(type(qtlog))
-        print('here')
-        logger.do_log('herelog')
         self.currnt_path = os.getcwd()
 
         video = Video(qtlog)
@@ -33,8 +31,9 @@ class MainThread:
     @staticmethod
     def clean():
         """Remove the tmp directory when you're done"""
-        dir_of_executable = os.path.dirname(__file__)
-        Path.rmdir(Path(dir_of_executable) / "rvidtmp/")
+        # dir_of_executable = os.path.dirname(__file__)
+        # Path.rmdir(Path(dir_of_executable) / "rvidtmp/")
+        pass
         return None
 
     def main(self, csv_path, output_path=""):
@@ -84,5 +83,5 @@ class MainThread:
 
 # TODO: add logger
 if __name__ == "__main__":
-    main = MainThread()
+    main = CoreProcess()
     main.main(['/home/sadegh/video_search_test.csv'])
