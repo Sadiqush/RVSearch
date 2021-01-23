@@ -3,8 +3,6 @@ import threading
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from rvsearch.main import MainThread
-
 
 class UiMainWindow(threading.Thread):
     def __init__(self):
@@ -92,25 +90,30 @@ class UiMainWindow(threading.Thread):
         # ==============================================================================
         # Importnant parts
         self.retranslateUi(MainWindow)
-        self.path_open.clicked.connect(self.file_opener)   # Open button
-        self.actionOpen.triggered.connect(self.file_opener)   # Open in menu
-        self.actionExit.triggered.connect(self.exit_program)    # Exit in menu
-        self.start_button.clicked.connect(self.start_main)    # Start button
-        self.stop_button.clicked.connect(self.stop_button.animateClick)    # Stop button (not configed yet)
+        self.path_open.clicked.connect(self.file_opener)  # Open button
+        self.actionOpen.triggered.connect(self.file_opener)  # Open in menu
+        self.actionExit.triggered.connect(self.exit_program)  # Exit in menu
+        self.start_button.clicked.connect(self.start_main)  # Start button
+        self.stop_button.clicked.connect(self.stop_button.animateClick)  # Stop button (not configed yet)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def start_main(self):
-        # This should be a separate thread
-        main = MainThread(self.log)
-        input = self.csvpath_input.text()   # Path for csv input
-        output = self.csvpath_output.text()    # Path for csv output
-        main.main(input, output)
+        self.log.append('a tout le monde')
+        from rvsearch.main import MainThread
+        self.log.append('bbrrrrrrrrrruh')
+        input = self.csvpath_input.text()  # Path for csv input
+        output = self.csvpath_output.text()  # Path for csv output
+        main_thrd = MainThread(self.log)
+        main_thrd.main([input], output)
+        return None
+        # threading.Thread(target=MainThread(self.log).main([input], output)).start()
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
         name, _ = QtWidgets.QFileDialog.getOpenFileName(filter="Text files (*.csv *.txt)")
         if name:
             self.csvpath_input.setText(_translate("MainWindow", name))
+            self.log.append(f'File {name} is going to load')
         return None
 
     @staticmethod
@@ -120,6 +123,7 @@ class UiMainWindow(threading.Thread):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = UiMainWindow()

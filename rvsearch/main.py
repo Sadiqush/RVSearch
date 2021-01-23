@@ -9,10 +9,13 @@ import rvsearch.config as vconf
 from rvsearch.logger import Logger as logger
 
 
-class MainThread(threading.Thread):
+class MainThread:
     def __init__(self, qtlog=[]):
-        threading.Thread.__init__(self)
+        # threading.Thread.__init__(self)
         self.qtlog = qtlog
+        print(type(qtlog))
+        print('here')
+        logger.do_log('herelog')
         self.currnt_path = os.getcwd()
 
         video = Video(qtlog)
