@@ -25,6 +25,7 @@ class Video:
         fr, ps = md['@avg_frame_rate'].split('/')
         self.original_fps = int(fr) // int(ps)
         self.fps = fps if fps else self.original_fps
+        self._frames = None
 
     def __iter__(self) -> Iterator[np.ndarray]:
         vgen = vreader(self.file_name, as_grey=self.grey)
@@ -32,15 +33,28 @@ class Video:
         for item in islice(vgen, 0, None, skip):
             yield item.squeeze()
 
-    def get_frames(self) -> np.ndarray:
+    def get_frames(self, reload=False) -> np.ndarray:
         """Load and return video frames in memory as a list."""
+        if self._frames and not reload:
+            return self._frames
         vgen = vreader(self.file_name, as_grey=self.grey)
         skip = int(self.original_fps // self.fps)
-        return np.array(list(islice(vgen, 0, None, skip)), dtype='uint8').squeeze()
+        self._frames = np.array(list(islice(vgen, 0, None, skip)), dtype='uint8').squeeze()
+        return self._frames
 
     def get_iterator(self) -> Iterator[np.ndarray]:
         """Return an iterator which read frame from file and return it."""
         return iter(self)
+
+
+"""
+class VideoComparer:
+    def __init__(self, fps=1, threshold=0.7, hash_len=12, verbosity=Verbosity.NONE):
+        self.fps = 1
+        self.threshold = 0.7
+        self.hash_len = hash_len
+        self.verbosity = verbosity
+"""
 
 
 def compare_frames_generator(frames0, frames1, threshold=0.7, verbosity=Verbosity.NONE) -> tuple[int, int]:
@@ -100,6 +114,7 @@ if __name__ == '__main__':
     frames0 = v0.get_frames()
     frames1 = v1.get_frames()
     import time
+
     print("now!")
     tim = time.monotonic()
     compare_frames(frames0, frames1, 0.7, verbosity=Verbosity.LOW)
