@@ -89,18 +89,20 @@ class UiMainWindow(threading.Thread):
         self.menu.addAction(self.actionExit)
         self.menubar.addAction(self.menu.menuAction())
 
+        # ==============================================================================
+        # Importnant parts
         self.retranslateUi(MainWindow)
-        self.path_open.clicked.connect(self.file_opener)
-        self.actionExit.triggered.connect(self.exit_program)
-        self.actionOpen.triggered.connect(self.file_opener)
-        self.start_button.clicked.connect(self.start_main)
-        self.stop_button.clicked.connect(self.stop_button.animateClick)
+        self.path_open.clicked.connect(self.file_opener)   # Open button
+        self.actionOpen.triggered.connect(self.file_opener)   # Open in menu
+        self.actionExit.triggered.connect(self.exit_program)    # Exit in menu
+        self.start_button.clicked.connect(self.start_main)    # Start button
+        self.stop_button.clicked.connect(self.stop_button.animateClick)    # Stop button (not configed yet)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def start_main(self):
         main = MainThread(self.log)
-        input = self.csvpath_input.text()
-        output = self.csvpath_output.text()
+        input = self.csvpath_input.text()   # Path for csv input
+        output = self.csvpath_output.text()    # Path for csv output
         main.main(input, output)
 
     def file_opener(self):
