@@ -15,7 +15,7 @@ class Downloader:
         # TODO: if above 30min
         id, name, channel = self._get_info(url)
         if Path(id).exists():
-            if not vconf.QUIET: print("** Skipping download, file already exists")
+            if not vconf.QUIET: logger.do_log('** Skipping download, file already exists', self.qtlog)
         else:
             response = self.download(url)
         return [id, name, channel, url]
@@ -36,23 +36,26 @@ class Downloader:
 
     class MyLogger(object):
         """Logs downloading infos on stdout."""
+        def __init__(self):
+            self.qtlog = Downloader.qtlog
+
         def debug(self, msg):
-            print(msg)
-            # pass
+            logger.do_log(msg, self.qtlog)
 
         def warning(self, msg):
-            pass
+            if vconf.VERBOSE:
+                logger.do_log(msg, self.qtlog)
 
         def error(self, msg):
-            print(msg)
+            logger.do_log(msg, self.qtlog)
 
     @staticmethod
     def _progress(d):
         """da progress"""
         if d['status'] == 'finished':
-            print('Done downloading.')
+            logger.do_log('Done downloading.', Downloader.qtlog)
 
-    def _get_info(self, url):
+    def _get_info(self, url) -> object:
         """Get video's information. Also, if the URL is a playlist, RAISE."""
         with youtube_dl.YoutubeDL({'logger': self.MyLogger()}) as ydl:
             result = ydl.extract_info(url, download=False)

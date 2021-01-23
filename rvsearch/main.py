@@ -51,8 +51,8 @@ class CoreProcess:
 
             for source_url in source_list:
                 # Downloading
-                cmp_file = Downloader.get_video(com_url[0])
-                src_file = Downloader.get_video(source_url)
+                cmp_file = Downloader.get_video(com_url[0], self.qtlog)
+                src_file = Downloader.get_video(source_url, self.qtlog)
 
                 # Getting things ready
                 if not vconf.QUIET: logger.do_log('Getting ready to start comparison process', self.qtlog)
