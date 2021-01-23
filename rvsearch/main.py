@@ -6,7 +6,7 @@ from PyQt5.QtCore import pyqtSignal, QObject
 
 from rvsearch.video_utils import Video
 from rvsearch.csv_handle import read_csv, save_csv, record_similarity
-from rvsearch.downloader import get_video
+from rvsearch.downloader import Downloader
 import rvsearch.config as vconf
 from rvsearch.logger import Logger as logger
 
@@ -51,8 +51,8 @@ class CoreProcess:
 
             for source_url in source_list:
                 # Downloading
-                cmp_file = get_video(com_url[0])
-                src_file = get_video(source_url)
+                cmp_file = Downloader.get_video(com_url[0])
+                src_file = Downloader.get_video(source_url)
 
                 # Getting things ready
                 if not vconf.QUIET: logger.do_log('Getting ready to start comparison process', self.qtlog)
