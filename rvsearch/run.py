@@ -2,7 +2,7 @@ import argparse
 import sys
 
 import rvsearch.config as vconf
-from rvsearch.main import MainThread
+from rvsearch.main import CoreProcess
 
 
 def run():
@@ -32,7 +32,7 @@ def run():
     assert not (vconf.QUIET and vconf.VERBOSE), \
         "Tool can\'t be quiet and verbose at the same time"
 
-    sys.exit(MainThread.main(input_path, output_path))
+    sys.exit(CoreProcess.main(input_path, output_path))
 
 
 if __name__ == "__main__":
