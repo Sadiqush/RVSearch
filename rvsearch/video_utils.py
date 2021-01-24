@@ -10,9 +10,6 @@ import rvsearch.config as vconf
 
 
 class Video:
-    def __init__(self, qtlog=[]):
-        self.qtlog = qtlog
-
     def video_init(self, vid_info):
         """Extract the frames from video and get all the infos from downloader"""
         vid_meta = {'path': vid_info[0],
