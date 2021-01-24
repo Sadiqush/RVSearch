@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import threading
+import time
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThreadPool, QThread
-
+from rvsearch.logger import Logger
 
 class UiMainWindow:
     pill2kill = threading.Event()
@@ -102,15 +103,24 @@ class UiMainWindow:
         UiMainWindow.pill2kill.set()
 
     def thread_start(self):
-        t = threading.Thread(target=self.start)
-        t.start()
+        t1 = threading.Thread(target=self.start_log, name='logger')
+        t2 = threading.Thread(target=self.start, name='core thread')
+        t1.start()
+        t2.start()
 
     def start(self):
         self.log.append('started')
         from rvsearch.main import CoreProcess
         input = self.csvpath_input.text()  # Path for csv input
         output = self.csvpath_output.text()  # Path for csv output
-        CoreProcess(self.log).main([input], output)
+        CoreProcess().main([input], output)
+
+    def start_log(self):
+        while True:
+            if Logger.log:
+                self.log.append(Logger.log)
+                Logger.log = ''
+            time.sleep(0.1)
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
@@ -133,5 +143,4 @@ if __name__ == "__main__":
     ui = UiMainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    # threading.Thread(target=app.exec_()).start()
     sys.exit(app.exec_())
