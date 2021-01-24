@@ -6,8 +6,6 @@ from rvsearch.logger import Logger as logger
 
 
 class Downloader:
-    def __init__(self, qtlog=[]):
-        self.qtlog = qtlog
 
     def get_video(self, url) -> list[str, str]:
         """Gets the video infor from YouTube and then downloads it"""
@@ -15,7 +13,7 @@ class Downloader:
         # TODO: if above 30min
         id, name, channel = self._get_info(url)
         if Path(id).exists():
-            if not vconf.QUIET: logger.do_log('** Skipping download, file already exists', self.qtlog)
+            if not vconf.QUIET: logger.do_log('** Skipping download, file already exists')
         else:
             response = self.download(url)
         return [id, name, channel, url]
@@ -36,24 +34,21 @@ class Downloader:
 
     class MyLogger(object):
         """Logs downloading infos on stdout."""
-        def __init__(self):
-            self.qtlog = Downloader.qtlog
-
         def debug(self, msg):
-            logger.do_log(msg, self.qtlog)
+            logger.do_log(msg)
 
         def warning(self, msg):
             if vconf.VERBOSE:
-                logger.do_log(msg, self.qtlog)
+                logger.do_log(msg)
 
         def error(self, msg):
-            logger.do_log(msg, self.qtlog)
+            logger.do_log(msg)
 
     @staticmethod
     def _progress(d):
         """da progress"""
         if d['status'] == 'finished':
-            logger.do_log('Done downloading.', Downloader.qtlog)
+            logger.do_log('Done downloading.')
 
     def _get_info(self, url) -> object:
         """Get video's information. Also, if the URL is a playlist, RAISE."""
