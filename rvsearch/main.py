@@ -1,8 +1,5 @@
 import os
 from pathlib import Path
-import time
-
-from PyQt5.QtCore import pyqtSignal, QObject
 
 from rvsearch.video_utils import Video
 from rvsearch.csv_handle import read_csv, save_csv, record_similarity
@@ -12,19 +9,19 @@ from rvsearch.logger import Logger as logger
 
 
 class CoreProcess:
-    def __init__(self, qtlog=[]):
-        self.qtlog = qtlog
+    def __init__(self):
         self.currnt_path = os.getcwd()
+        self.file_path = os.path.dirname(__file__)
 
-        video = Video(qtlog)
+        video = Video()
         self.video_init = video.video_init
         # self.compare_videos_parallel = video.compare_videos_parallel
         self.compare_videos = video.compare_videos
 
     def change_path(self):
         """Change working directory to a temporary directory."""
-        dir_of_executable = os.path.dirname(__file__)
-        Path(Path(dir_of_executable) / "rvidtmp/").mkdir(parents=True, exist_ok=True)
+        print('Running from ', self.file_path)
+        Path(Path(self.file_path) / "rvidtmp/").mkdir(parents=True, exist_ok=True)
         os.chdir(self.currnt_path + "/rvidtmp")
         return None
 
@@ -39,10 +36,10 @@ class CoreProcess:
     def main(self, csv_path, output_path=""):
         """Main function: read csv, download videos, compare them, save results."""
         self.change_path()
-
-        if not csv_path:  # TODO: run after you didn't put input
-            logger.do_log('You have not provided any input', self.qtlog)
+        if not csv_path[0]:
+            logger.log = 'You have not provided any input'
             self.clean()
+            os.chdir(self.currnt_path)
             exit()
 
         for csv in csv_path:
