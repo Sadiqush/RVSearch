@@ -48,19 +48,19 @@ class CoreProcess:
 
             for source_url in source_list:
                 # Downloading
-                cmp_file = Downloader.get_video(com_url[0], self.qtlog)
-                src_file = Downloader.get_video(source_url, self.qtlog)
+                cmp_file = Downloader.get_video(com_url[0])
+                src_file = Downloader.get_video(source_url)
 
                 # Getting things ready
-                if not vconf.QUIET: logger.do_log('Getting ready to start comparison process', self.qtlog)
+                if not vconf.QUIET: logger.do_log('Getting ready to start comparison process')
                 frames_cmp, meta_cmp = self.video_init(cmp_file)
                 frames_src, meta_src = self.video_init(src_file)
 
                 # Do the comparison
-                if not vconf.QUIET: logger.do_log('**Comparing started**', self.qtlog)
+                if not vconf.QUIET: logger.do_log('**Comparing started**')
                 time_stamps = self.compare_videos(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
                 if not vconf.QUIET:
-                    logger.do_log(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished", self.qtlog)
+                    logger.do_log(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
 
                 record_df = record_similarity(time_stamps,
                                               [meta_cmp['url'], meta_src['url']],
@@ -72,9 +72,9 @@ class CoreProcess:
                     final_csv_name = save_csv(record_df, f'{self.currnt_path}/{output_path}')
                 else:
                     final_csv_name = save_csv(record_df, f'{self.currnt_path}/{meta_cmp["name"]}_results.csv')
-                if not vconf.QUIET: logger.do_log(f'Results saved to {final_csv_name}', self.qtlog)
+                if not vconf.QUIET: logger.do_log(f'Results saved to {final_csv_name}')
 
-        if not vconf.QUIET: logger.do_log(f'All done. Exiting...', self.qtlog)
+        if not vconf.QUIET: logger.do_log(f'All done. Exiting...')
         return None
 
 
