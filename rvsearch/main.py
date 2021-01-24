@@ -46,9 +46,10 @@ class CoreProcess:
             csv = Path(self.currnt_path) / csv
             com_url, source_list = read_csv(csv)
 
+            # Downloading
+            cmp_file = Downloader.get_video(com_url[0])
             for source_url in source_list:
                 # Downloading
-                cmp_file = Downloader.get_video(com_url[0])
                 src_file = Downloader.get_video(source_url)
 
                 # Getting things ready
