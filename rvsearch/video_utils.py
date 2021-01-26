@@ -64,12 +64,14 @@ class Video:
                     m1, s1 = divmod((current_frame_s / source_fps), 60)
                     m2, s2 = divmod((current_frame_t / target_fps), 60)
                     timestamps.append([[m1, s1], [m2, s2], score])
+                    if not vconf.QUIET:
+                        logger.do_log(f'Compilation video: similarity found at {int(m1)}:{int(s1)}')
                     if vconf.VERBOSE:
                         logger.do_log(timestamps[-1])
                         logger.do_log("--- %s seconds ---" % (time() - start))
                     break  # First similarity in video, break
 
-        if vconf.VERBOSE: logger.do_log("--- %s seconds ---" % (time() - start))
+        if vconf.VERBOSE: logger.do_log("It all took: --- %s seconds ---" % (time() - start))
         return timestamps
 
     def get_frames(self, vid, vid_name) -> list:
