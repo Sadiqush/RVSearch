@@ -62,7 +62,7 @@ def record_similarity(timestamps, urls, names, channels):
                     'Source_chnl': channels[1],
                     'Cmp_TimeStamp': f'{int(m1)}:{int(s1)}',
                     'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
-            if vconf.VERBOSE: logger.do_log(info)
+            if vconf.VERBOSE: logger.do_log(str(info))
             record_df = record_df.append(info, ignore_index=True)
     return record_df
 
