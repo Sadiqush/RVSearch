@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import time
 
 from rvsearch.video_utils import Video
 from rvsearch.csv_handle import read_csv, save_csv, record_similarity
@@ -12,7 +13,7 @@ class CoreProcess:
     def __init__(self):
         self.currnt_path = os.getcwd()
         self.file_path = os.path.dirname(__file__)
-
+        self. downloader = Downloader
         video = Video()
         self.video_init = video.video_init
         # self.compare_videos_parallel = video.compare_videos_parallel
@@ -20,7 +21,7 @@ class CoreProcess:
 
     def change_path(self):
         """Change working directory to a temporary directory."""
-        print('Running from ', self.file_path)
+        if vconf.VERBOSE: logger.do_log(f'Running from {self.file_path}')
         Path(Path(self.file_path) / "rvidtmp/").mkdir(parents=True, exist_ok=True)
         os.chdir(self.currnt_path + "/rvidtmp")
         return None
@@ -37,7 +38,7 @@ class CoreProcess:
         """Main function: read csv, download videos, compare them, save results."""
         self.change_path()
         if not csv_path[0]:
-            logger.log = 'You have not provided any input'
+            logger.do_log('You have not provided any input')
             self.clean()
             os.chdir(self.currnt_path)
             exit()
@@ -45,9 +46,10 @@ class CoreProcess:
         for csv in csv_path:
             csv = Path(self.currnt_path) / csv
             com_url, source_list = read_csv(csv)
-
+            logger.do_log('hahaha loser')
+            time.sleep(0.4)
             # Downloading
-            cmp_file = Downloader.get_video(com_url[0])
+            cmp_file = self.downloader.get_video(com_url)
             for source_url in source_list:
                 # Downloading
                 src_file = Downloader.get_video(source_url)
