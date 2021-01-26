@@ -13,7 +13,7 @@ class CoreProcess:
     def __init__(self):
         self.currnt_path = os.getcwd()
         self.file_path = os.path.dirname(__file__)
-        self. downloader = Downloader
+        self. downloader = Downloader()
         video = Video()
         self.video_init = video.video_init
         # self.compare_videos_parallel = video.compare_videos_parallel
