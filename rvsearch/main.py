@@ -16,7 +16,7 @@ class CoreProcess:
         self. downloader = Downloader()
         video = Video()
         self.video_init = video.video_init
-        # self.compare_videos_parallel = video.compare_videos_parallel
+        self.compare_videos_parallel = video.compare_videos_parallel
         self.compare_videos = video.compare_videos
 
     def change_path(self):
@@ -57,10 +57,11 @@ class CoreProcess:
                 if not vconf.QUIET: logger.do_log('Getting ready to start comparison process')
                 frames_cmp, meta_cmp = self.video_init(cmp_file)
                 frames_src, meta_src = self.video_init(src_file)
+                if not vconf.QUIET: logger.do_log(f'Comparing source: {meta_src["name"]}')
 
                 # Do the comparison
                 if not vconf.QUIET: logger.do_log('**Comparing started**')
-                time_stamps = self.compare_videos(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
+                time_stamps = self.compare_videos_parallel(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
                 if not vconf.QUIET:
                     logger.do_log(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
 
@@ -76,7 +77,7 @@ class CoreProcess:
                     final_csv_name = save_csv(record_df, f'{self.currnt_path}/{meta_cmp["name"]}_results.csv')
                 if not vconf.QUIET: logger.do_log(f'Results saved to {final_csv_name}')
 
-        if not vconf.QUIET: logger.do_log(f'All done. Exiting...')
+        if not vconf.QUIET: logger.do_log(f'All done')
         return None
 
 
