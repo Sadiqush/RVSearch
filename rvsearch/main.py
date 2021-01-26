@@ -49,10 +49,10 @@ class CoreProcess:
             logger.do_log('hahaha loser')
             time.sleep(0.4)
             # Downloading
-            cmp_file = self.downloader.get_video(com_url)
+            cmp_file = self.downloader.get_video(com_url[0])
             for source_url in source_list:
                 # Downloading
-                src_file = Downloader.get_video(source_url)
+                src_file = self.downloader.get_video(source_url)
 
                 # Getting things ready
                 if not vconf.QUIET: logger.do_log('Getting ready to start comparison process')
