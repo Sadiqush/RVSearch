@@ -7,6 +7,7 @@ from skvideo.io import ffprobe
 
 import rvsearch.imagehash as ih
 import rvsearch.config as vconf
+from rvsearch.logger import Logger as logger
 
 
 class Video:
@@ -22,10 +23,10 @@ class Video:
 
         # Save frames into RAM
         if not vconf.QUIET:
-            print(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
+            logger.do_log(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
             start = time()
         frames = self.get_frames(vid, vid_meta['path'])
-        if vconf.VERBOSE: print(time() - start)
+        if vconf.VERBOSE: logger.do_log(f'Loading took {time() - start} seconds')
         return frames, vid_meta
 
     def compare_videos_parallel(self, source_frames, source_fps, target_frames, target_fps):
@@ -35,7 +36,7 @@ class Video:
         n = int(len(source_frames) / cpus)
         subs = [source_frames[i:i + n] for i in range(0, len(source_frames), n)]
         args = [(sub, source_fps, target_frames, target_fps) for sub in subs]
-        if vconf.VERBOSE: print(f'you\'re having {cpus} process simultaneously')
+        if vconf.VERBOSE: logger.do_log(f'you\'re having {cpus} process simultaneously')
         results = pool.starmap(self.compare_videos, args)
         ret = []
         for res in results:
@@ -49,9 +50,9 @@ class Video:
         current_frame_s = 0
         current_frame_t = 0
         timestamps = []
-        if vconf.VERBOSE: start = time()
-
-        if vconf.VERBOSE: print('compare')
+        if vconf.VERBOSE:
+            start = time()
+            logger.do_log('Comparing started')
         for s_frame in source_frames:
             current_frame_s += source_fps  # Go up 1 second
             current_frame_t = 0  # One target done, now reset
@@ -64,11 +65,11 @@ class Video:
                     m2, s2 = divmod((current_frame_t / target_fps), 60)
                     timestamps.append([[m1, s1], [m2, s2], score])
                     if vconf.VERBOSE:
-                        print(timestamps[-1])
-                        print("--- %s seconds ---" % (time() - start))
+                        logger.do_log(timestamps[-1])
+                        logger.do_log("--- %s seconds ---" % (time() - start))
                     break  # First similarity in video, break
 
-        if vconf.VERBOSE: print("--- %s seconds ---" % (time() - start))
+        if vconf.VERBOSE: logger.do_log("--- %s seconds ---" % (time() - start))
         return timestamps
 
     def get_frames(self, vid, vid_name) -> list:
