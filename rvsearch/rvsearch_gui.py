@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 import threading
-import time
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThreadPool, QThread
 from rvsearch.logger import Logger
-import rvsearch.config as vconf
 
 
 class UiMainWindow:
@@ -120,8 +117,6 @@ class UiMainWindow:
     def start_log(self):
         while True:
             if Logger.log:
-                if vconf.VERBOSE:
-                    print('QT reading log')
                 self.log.append(Logger.log)
                 if Logger.log == 'All done':
                     Logger.log = ''
