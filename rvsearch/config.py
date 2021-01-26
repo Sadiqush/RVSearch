@@ -1,2 +1,2 @@
 QUIET = False
-VERBOSE = False
+VERBOSE = True
