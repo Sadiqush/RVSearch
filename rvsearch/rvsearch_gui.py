@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import threading
+import time
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from rvsearch.logger import Logger
@@ -122,6 +123,7 @@ class UiMainWindow:
                     Logger.log = ''
                     return None
                 Logger.log = ''
+            time.sleep(0.1)
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
