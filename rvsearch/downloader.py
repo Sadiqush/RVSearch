@@ -6,6 +6,8 @@ from rvsearch.logger import Logger as logger
 
 
 class Downloader:
+    def __init__(self):
+        pass
 
     def get_video(self, url) -> list[str, str]:
         """Gets the video infor from YouTube and then downloads it"""

@@ -65,6 +65,7 @@ class Video:
                     m2, s2 = divmod((current_frame_t / target_fps), 60)
                     timestamps.append([[m1, s1], [m2, s2], score])
                     if not vconf.QUIET:
+                        print('ooooh im logginggg')
                         logger.do_log(f'Compilation video: similarity found at {int(m1)}:{int(s1)}')
                     if vconf.VERBOSE:
                         logger.do_log(timestamps[-1])
