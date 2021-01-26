@@ -119,9 +119,9 @@ class UiMainWindow:
         while True:
             if Logger.log:
                 self.log.append(Logger.log)
-                if Logger.log == 'All done':
-                    Logger.log = ''
-                    return None
+                # if Logger.log == 'All done':
+                #     Logger.log = ''
+                #     break
                 Logger.log = ''
             time.sleep(0.1)
 

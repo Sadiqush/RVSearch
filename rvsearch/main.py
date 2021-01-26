@@ -22,7 +22,7 @@ class CoreProcess:
         """Change working directory to a temporary directory."""
         if vconf.VERBOSE: logger.do_log(f'Running from {self.file_path}')
         Path(Path(self.file_path) / "rvidtmp/").mkdir(parents=True, exist_ok=True)
-        os.chdir(self.currnt_path + "/rvidtmp")
+        os.chdir(self.file_path + "/rvidtmp")
         return None
 
     @staticmethod
