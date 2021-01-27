@@ -47,7 +47,7 @@ def record_similarity(timestamps, urls, names, channels):
     """When you find a similar video, save its information to a dataframe then give it back."""
     # If you want to dynamically save .csv, init before recording
     record_df = init_record_file()
-    logger.do_log(f'Found {len(timestamps)} similar frames')
+    logger.do_log(f'Found {len(timestamps[0])} similar frames')
     for thread_res in timestamps:
         for stamp in thread_res:
             # TODO: Sum near timestamps together
