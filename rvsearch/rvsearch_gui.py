@@ -3,6 +3,7 @@ import threading
 import time
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 from rvsearch.logger import Logger
 
 
@@ -34,6 +35,7 @@ class UiMainWindow:
         self.csvpath_input.setGeometry(QtCore.QRect(130, 40, 441, 21))
         self.csvpath_input.setText("")
         self.csvpath_input.setObjectName("csvpath_edit")
+        self.csvpath_input.textEdited.connect(self.on_csv_input_edit)
         self.csvpath = QtWidgets.QLabel(self.centralwidget)
         self.csvpath.setGeometry(QtCore.QRect(70, 40, 71, 20))
         self.csvpath.setObjectName("csvpath")
@@ -97,6 +99,7 @@ class UiMainWindow:
         self.start_button.clicked.connect(self.thread_start)  # Start button
         self.stop_button.clicked.connect(self.thread_stop)  # Stop button (not configed yet)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.start_button.setEnabled(False)
 
     @staticmethod
     def thread_stop():
@@ -115,6 +118,9 @@ class UiMainWindow:
         output = self.csvpath_output.text()  # Path for csv output
         CoreProcess().main([input], output)
 
+    def on_csv_input_edit(self, txt):
+        self.start_button.setEnabled(bool(txt))
+
     def start_log(self):
         while True:
             if Logger.log:
@@ -127,7 +133,7 @@ class UiMainWindow:
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
-        name, _ = QtWidgets.QFileDialog.getOpenFileName(filter="Text files (*.csv *.txt)")
+        name, _ = QtWidgets.QFileDialog.getOpenFileName(filter="CSV files (*.csv)")
         if name:
             self.csvpath_input.setText(_translate("MainWindow", name))
             self.log.append(f'File {name} is going to load')
