@@ -109,7 +109,7 @@ class UiMainWindow:
         t2.start()
 
     def start(self):
-        self.log.append('started')
+        self.log.append('Processing...')
         from rvsearch.main import CoreProcess
         input = self.csvpath_input.text()  # Path for csv input
         output = self.csvpath_output.text()  # Path for csv output

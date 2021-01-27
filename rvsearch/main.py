@@ -35,6 +35,7 @@ class CoreProcess:
 
     def main(self, csv_path, output_path=""):
         """Main function: read csv, download videos, compare them, save results."""
+        logger.do_log('Started')
         self.change_path()
         if not csv_path[0]:
             logger.do_log('You have not provided any input')
@@ -59,7 +60,7 @@ class CoreProcess:
                 if not vconf.QUIET: logger.do_log(f'Comparing source: {meta_src["name"]}')
 
                 # Do the comparison
-                if not vconf.QUIET: logger.do_log('**Comparing started**')
+                if not vconf.QUIET: logger.do_log('**Comparing started**\nIt may take a few minutes...')
                 time_stamps = self.compare_videos_parallel(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
                 if not vconf.QUIET:
                     logger.do_log(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
@@ -70,13 +71,14 @@ class CoreProcess:
                                               [meta_cmp['channel'], meta_src['channel']])
 
                 # TODO: maybe save in comparing?
+                logger.do_log('Saving...')
                 if output_path:
                     final_csv_name = save_csv(record_df, f'{self.currnt_path}/{output_path}')
                 else:
                     final_csv_name = save_csv(record_df, f'{self.currnt_path}/{meta_cmp["name"]}_results.csv')
                 if not vconf.QUIET: logger.do_log(f'Results saved to {final_csv_name}')
 
-        if not vconf.QUIET: logger.do_log(f'All done')
+        if not vconf.QUIET: logger.do_log(f'====All done===')
         return None
 
 

@@ -1,4 +1,4 @@
-from time import time
+import time
 import multiprocessing as mp
 
 import numpy as np
@@ -24,9 +24,9 @@ class Video:
         # Save frames into RAM
         if not vconf.QUIET:
             logger.do_log(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
-            start = time()
+            start = time.time()
         frames = self.get_frames(vid, vid_meta['path'])
-        if vconf.VERBOSE: logger.do_log(f'Loading took {time() - start} seconds')
+        if vconf.VERBOSE: logger.do_log(f'Loading took {time.time() - start} seconds')
         return frames, vid_meta
 
     def compare_videos_parallel(self, source_frames, source_fps, target_frames, target_fps):
@@ -51,7 +51,7 @@ class Video:
         current_frame_t = 0
         timestamps = []
         if vconf.VERBOSE:
-            start = time()
+            start = time.time()
             logger.do_log('Comparing started')
         for s_frame in source_frames:
             current_frame_s += source_fps  # Go up 1 second
@@ -65,14 +65,13 @@ class Video:
                     m2, s2 = divmod((current_frame_t / target_fps), 60)
                     timestamps.append([[m1, s1], [m2, s2], score])
                     if not vconf.QUIET:
-                        print('ooooh im logginggg')
                         logger.do_log(f'Compilation video: similarity found at {int(m1)}:{int(s1)}')
                     if vconf.VERBOSE:
                         logger.do_log(timestamps[-1])
-                        logger.do_log("--- %s seconds ---" % (time() - start))
+                        logger.do_log("--- %s seconds ---" % (time.time() - start))
                     break  # First similarity in video, break
 
-        if vconf.VERBOSE: logger.do_log("It all took: --- %s seconds ---" % (time() - start))
+        if vconf.VERBOSE: logger.do_log("It all took: --- %s seconds ---" % (time.time() - start))
         return timestamps
 
     def get_frames(self, vid, vid_name) -> list:
