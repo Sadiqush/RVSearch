@@ -79,7 +79,7 @@ class CoreProcess:
                 if not vconf.QUIET: logger.do_log(f'Results saved to {final_csv_name}')
 
         if not vconf.QUIET: logger.do_log(f'====All done====')
-        return None
+        return record_df
 
 
 # TODO: add logger

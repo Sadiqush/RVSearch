@@ -113,7 +113,8 @@ class UiMainWindow:
         from rvsearch.main import CoreProcess
         input = self.csvpath_input.text()  # Path for csv input
         output = self.csvpath_output.text()  # Path for csv output
-        CoreProcess().main([input], output)
+        results = CoreProcess().main([input], output)
+        self.output.append(results)
 
     def start_log(self):
         while True:
