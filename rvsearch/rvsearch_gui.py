@@ -122,6 +122,7 @@ class UiMainWindow:
         self.start_button.clicked.connect(self.thread_start)  # Start button
         self.stop_button.clicked.connect(self.thread_stop)  # Stop button (not configed yet)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.start_button.setEnabled(False)
 
     record_df = {}
 
@@ -148,6 +149,9 @@ class UiMainWindow:
         results = CoreProcess().main([in_path], out_path)
         self.record_df = results
 
+    def on_csv_input_edit(self, txt):
+        self.start_button.setEnabled(bool(txt))
+
     def start_log(self):
         while True:
             if Logger.log:
@@ -164,10 +168,11 @@ class UiMainWindow:
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
-        name, _ = QtWidgets.QFileDialog.getOpenFileName(filter="Text files (*.csv *.txt)")
+        name, _ = QtWidgets.QFileDialog.getOpenFileName(filter="CSV files (*.csv)")
         if name:
             self.csvpath_input.setText(_translate("MainWindow", name))
             self.log.append(f'File {name} is going to load')
+            self.start_button.setEnabled(True)
         return None
 
     @staticmethod
