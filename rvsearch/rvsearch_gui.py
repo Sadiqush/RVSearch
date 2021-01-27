@@ -137,6 +137,7 @@ class UiMainWindow:
         if name:
             self.csvpath_input.setText(_translate("MainWindow", name))
             self.log.append(f'File {name} is going to load')
+            self.start_button.setEnabled(True)
         return None
 
     @staticmethod
