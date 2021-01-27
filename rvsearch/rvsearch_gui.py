@@ -1,37 +1,41 @@
 # -*- coding: utf-8 -*-
 import threading
 import time
+from multiprocessing.pool import ThreadPool
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from rvsearch.logger import Logger
 
 
-class pandasModel(QtCore.QAbstractTableModel):
-
-    def __init__(self, data):
-        QtCore.QAbstractTableModel.__init__(self)
-        self._data = data
-
-    def rowCount(self, parent=None):
-        return self._data.shape[0]
-
-    def columnCount(self, parnet=None):
-        return self._data.shape[1]
-
-    def data(self, index, role=QtCore.Qt.DisplayRole):
-        if index.isValid():
-            if role == QtCore.Qt.DisplayRole:
-                return str(self._data.iloc[index.row(), index.column()])
-        return None
-
-    def headerData(self, col, orientation, role):
-        if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
-            return self._data.columns[col]
-        return None
+# class pandasModel(QtCore.QAbstractTableModel):
+#
+#     def __init__(self, data):
+#         QtCore.QAbstractTableModel.__init__(self)
+#         self._data = data
+#
+#     def rowCount(self, parent=None):
+#         return self._data.shape[0]
+#
+#     def columnCount(self, parnet=None):
+#         return self._data.shape[1]
+#
+#     def data(self, index, role=QtCore.Qt.DisplayRole):
+#         if index.isValid():
+#             if role == QtCore.Qt.DisplayRole:
+#                 return str(self._data.iloc[index.row(), index.column()])
+#         return None
+#
+#     def headerData(self, col, orientation, role):
+#         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
+#             return self._data.columns[col]
+#         return None
 
 
 class UiMainWindow:
+    def __init__(self):
+        self.tp = ThreadPool(processes=2)
+
     pill2kill = threading.Event()
 
     def retranslateUi(self, MainWindow):
@@ -130,16 +134,17 @@ class UiMainWindow:
     def thread_stop():
         UiMainWindow.pill2kill.set()
 
-    def thread_start(self):
-        t1 = threading.Thread(target=self.start_log, name='logger')
-        t2 = threading.Thread(target=self.start, name='core process')
+    def print_out(self, results):
+        # model = pandasModel(df)
+        # self.output.setModel(model)
+        print(results)
 
-        t1.start()
-        t2.start()
+    def thread_start(self):
+        t1 = self.tp.apply_async(self.start_log)
+        t2 = self.tp.apply_async(self.start, callback=self.print_out)
 
         # while t2.is_alive():
         #     time.sleep(3)
-        self.print_out(self.record_df)
 
     def start(self):
         self.log.append('Processing...')
@@ -147,7 +152,7 @@ class UiMainWindow:
         in_path = self.csvpath_input.text()  # Path for csv input
         out_path = self.csvpath_output.text()  # Path for csv output
         results = CoreProcess().main([in_path], out_path)
-        self.record_df = results
+        return results
 
     def on_csv_input_edit(self, txt):
         self.start_button.setEnabled(bool(txt))
@@ -162,9 +167,6 @@ class UiMainWindow:
                 Logger.log = ''
             time.sleep(0.1)
 
-    def print_out(self, df):
-        model = pandasModel(df)
-        self.output.setModel(model)
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
