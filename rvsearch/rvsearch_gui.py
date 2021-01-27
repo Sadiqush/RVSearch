@@ -153,7 +153,7 @@ class UiMainWindow:
             time.sleep(0.1)
 
     def print_out(self, df):
-        model = DataFrameModel(df)
+        model = pandasModel(df)
         self.output.setModel(model)
 
     def file_opener(self):
