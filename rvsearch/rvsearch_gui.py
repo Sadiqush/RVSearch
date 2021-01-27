@@ -2,7 +2,6 @@
 import threading
 import time
 
-import pandas as pd
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from rvsearch.logger import Logger
@@ -124,23 +123,30 @@ class UiMainWindow:
         self.stop_button.clicked.connect(self.thread_stop)  # Stop button (not configed yet)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    record_df = {}
+
     @staticmethod
     def thread_stop():
         UiMainWindow.pill2kill.set()
 
     def thread_start(self):
         t1 = threading.Thread(target=self.start_log, name='logger')
-        t2 = threading.Thread(target=self.start, name='core thread')
+        t2 = threading.Thread(target=self.start, name='core process')
+
         t1.start()
         t2.start()
+
+        # while t2.is_alive():
+        #     time.sleep(3)
+        self.print_out(self.record_df)
 
     def start(self):
         self.log.append('Processing...')
         from rvsearch.main import CoreProcess
-        input = self.csvpath_input.text()  # Path for csv input
-        output = self.csvpath_output.text()  # Path for csv output
-        results = CoreProcess().main([input], output)
-        self.print_out(results)
+        in_path = self.csvpath_input.text()  # Path for csv input
+        out_path = self.csvpath_output.text()  # Path for csv output
+        results = CoreProcess().main([in_path], out_path)
+        self.record_df = results
 
     def start_log(self):
         while True:

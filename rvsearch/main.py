@@ -33,7 +33,7 @@ class CoreProcess:
         pass
         return None
 
-    def main(self, csv_path, output_path=""):
+    def main(self, csv_path, output_path="", record_df={}):
         """Main function: read csv, download videos, compare them, save results."""
         logger.do_log('Started')
         self.change_path()
