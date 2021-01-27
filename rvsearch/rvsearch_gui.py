@@ -177,7 +177,7 @@ class UiMainWindow:
         input = self.csvpath_input.text()  # Path for csv input
         output = self.csvpath_output.text()  # Path for csv output
         results = CoreProcess().main([input], output)
-        self.output.append(results)
+        self.print_out(results)
 
     def start_log(self):
         while True:
@@ -188,6 +188,10 @@ class UiMainWindow:
                 #     break
                 Logger.log = ''
             time.sleep(0.1)
+
+    def print_out(self, df):
+        model = PandasModel(df)
+        self.output.setModel(model)
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
