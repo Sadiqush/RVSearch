@@ -7,6 +7,7 @@ from multiprocessing.pool import ThreadPool
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pandas as pd   # Don't remove this
 
+import rvsearch.config as vconf
 from rvsearch.signals import Signals as signals
 
 
@@ -131,13 +132,16 @@ class UiMainWindow:
     def thread_stop(self):
         signals.do_log('Terminating...')
         signals.terminate.value = True
-        signals.do_log(f'from my pov ter is: {signals.terminate}')
+        if vconf.VERBOSE: signals.do_log(f'qt pov: {signals.terminate}')
         return None
 
     def print_out(self, results):
-        if results.any():
-            model = pandasModel(results)
-            self.output.setModel(model)
+        try:
+            if results.any():
+                model = pandasModel(results)
+                self.output.setModel(model)
+        except AttributeError:
+            pass
         signals.terminate.value = True
         return None
 
