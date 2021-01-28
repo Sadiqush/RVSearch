@@ -137,10 +137,10 @@ class UiMainWindow:
 
     def print_out(self, results):
         try:
-            if results.any():
+            if results.any:
                 model = pandasModel(results)
                 self.output.setModel(model)
-        except AttributeError:
+        except (AttributeError, ValueError):
             pass
         signals.terminate.value = True
         return None
