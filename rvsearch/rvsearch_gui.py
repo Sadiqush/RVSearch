@@ -165,9 +165,11 @@ class UiMainWindow:
                 self.log.append(signals.log)
                 signals.log = ''
             time.sleep(0.1)
-        time.sleep(0.5)
+        # Left over signals:
+        time.sleep(0.8)
         self.log.append(signals.log)
         signals.log = ''
+        return None
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
