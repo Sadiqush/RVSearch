@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
-import signal
+import signal as sig
 import time
 from multiprocessing.pool import ThreadPool
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pandas as pd   # Don't remove this
 
-from rvsearch.logger import Logger as logger
+from rvsearch.signals import Signals as signals
 
 
 class pandasModel(QtCore.QAbstractTableModel):
@@ -129,27 +129,27 @@ class UiMainWindow:
         self.start_button.setEnabled(False)
 
     def thread_stop(self):
-        logger.do_log('Terminating...')
-        logger.terminate.value = True
-        logger.do_log(f'from my pov ter is: {logger.terminate}')
+        signals.do_log('Terminating...')
+        signals.terminate.value = True
+        signals.do_log(f'from my pov ter is: {signals.terminate}')
         return None
 
     def print_out(self, results):
         if results.any():
             model = pandasModel(results)
             self.output.setModel(model)
-        logger.terminate.value = True
+        signals.terminate.value = True
         return None
 
     def thread_start(self):
-        logger.terminate.value = False
+        signals.terminate.value = False
         time.sleep(0.1)
         t1 = self.tp.apply_async(self.start_log)
         t2 = self.tp.apply_async(self.start, callback=self.print_out)
         return None
 
     def start(self):
-        logger.do_log('Processing...')
+        signals.do_log('Processing...')
         from rvsearch.main import CoreProcess
         in_path = self.csvpath_input.text()  # Path for csv input
         out_path = self.csvpath_output.text()  # Path for csv output
@@ -160,14 +160,14 @@ class UiMainWindow:
         self.start_button.setEnabled(bool(txt))
 
     def start_log(self):
-        while not logger.terminate.value:
-            if logger.log:
-                self.log.append(logger.log)
-                logger.log = ''
+        while not signals.terminate.value:
+            if signals.log:
+                self.log.append(signals.log)
+                signals.log = ''
             time.sleep(0.1)
         time.sleep(0.5)
-        self.log.append(logger.log)
-        logger.log = ''
+        self.log.append(signals.log)
+        signals.log = ''
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
@@ -180,7 +180,7 @@ class UiMainWindow:
 
     @staticmethod
     def exit_program():
-        os.kill(os.getpid(), signal.SIGUSR1)
+        os.kill(os.getpid(), sig.SIGUSR1)
 
 
 if __name__ == "__main__":

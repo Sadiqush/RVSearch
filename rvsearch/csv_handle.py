@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 
 import rvsearch.config as vconf
-from rvsearch.logger import Logger as logger
+from rvsearch.signals import Signals as signals
 
 
 def _load_csv(inpath):
@@ -47,7 +47,7 @@ def record_similarity(timestamps, urls, names, channels):
     """When you find a similar video, save its information to a dataframe then give it back."""
     # If you want to dynamically save .csv, init before recording
     record_df = init_record_file()
-    logger.do_log(f'Found {len(timestamps[0])} similar frames')
+    signals.do_log(f'Found {len(timestamps[0])} similar frames')
     for thread_res in timestamps:
         for stamp in thread_res:
             # TODO: Sum near timestamps together
@@ -63,7 +63,7 @@ def record_similarity(timestamps, urls, names, channels):
                     'Source_chnl': channels[1],
                     'Cmp_TimeStamp': f'{int(m1)}:{int(s1)}',
                     'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
-            if vconf.VERBOSE: logger.do_log(str(info))
+            if vconf.VERBOSE: signals.do_log(str(info))
             record_df = record_df.append(info, ignore_index=True)
     return record_df
 

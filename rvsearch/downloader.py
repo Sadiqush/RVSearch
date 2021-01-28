@@ -2,7 +2,7 @@ import youtube_dl
 from pathlib import Path
 
 import rvsearch.config as vconf
-from rvsearch.logger import Logger as logger
+from rvsearch.signals import Signals as signals
 
 
 class Downloader:
@@ -15,7 +15,7 @@ class Downloader:
         # TODO: if above 30min
         id, name, channel = self._get_info(url)
         if Path(id).exists():
-            if not vconf.QUIET: logger.do_log('** Skipping download, file already exists')
+            if not vconf.QUIET: signals.do_log('** Skipping download, file already exists')
         else:
             response = self.download(url)
         return [id, name, channel, url]
@@ -37,20 +37,20 @@ class Downloader:
     class MyLogger(object):
         """Logs downloading infos on stdout."""
         def debug(self, msg):
-            logger.do_log(msg)
+            signals.do_log(msg)
 
         def warning(self, msg):
             if vconf.VERBOSE:
-                logger.do_log(msg)
+                signals.do_log(msg)
 
         def error(self, msg):
-            logger.do_log(msg)
+            signals.do_log(msg)
 
     @staticmethod
     def _progress(d):
         """da progress"""
         if d['status'] == 'finished':
-            logger.do_log('Done downloading.')
+            signals.do_log('Done downloading.')
 
     def _get_info(self, url) -> object:
         """Get video's information. Also, if the URL is a playlist, RAISE."""
