@@ -64,6 +64,7 @@ class Video:
                 current_frame_t += target_fps  # Go up 1 second
                 score = self.compare_hash_frames(s_frame, t_frame, hash_len=12)
                 if signals.terminate.value:
+                    signals.do_log('Terminated')
                     return timestamps
                 if self.check_score(score, threshold=0.75):
                     print('ter is: ', signals.terminate)

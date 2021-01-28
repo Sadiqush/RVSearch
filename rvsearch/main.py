@@ -61,6 +61,10 @@ class CoreProcess:
                     if not vconf.QUIET: signals.do_log(f'Comparing source: {meta_src["name"]}')
 
                     # Do the comparison
+                    if signals.terminate.value:
+                        signals.do_log('Terminated')
+                        return None
+
                     if not vconf.QUIET: signals.do_log('**Comparing started**\nIt may take a few minutes...')
                     time_stamps = self.compare_videos_parallel(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
                     if not vconf.QUIET:
