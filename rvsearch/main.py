@@ -50,7 +50,7 @@ class CoreProcess:
             # Downloading
             cmp_file = self.downloader.get_video(com_url[0])
             for source_url in source_list:
-                while not logger.terminate:
+                while not logger.terminate.value:
                     # Downloading
                     src_file = self.downloader.get_video(source_url)
 

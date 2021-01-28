@@ -1,9 +1,11 @@
 import time
+from multiprocessing import Manager
 
 
 class Logger:
+    manager = Manager()
+    terminate = manager.Value('terminate', False)
     log = ''
-    terminate = False
 
     @staticmethod
     def do_log(text):

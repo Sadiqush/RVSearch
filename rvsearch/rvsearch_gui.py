@@ -130,18 +130,19 @@ class UiMainWindow:
 
     def thread_stop(self):
         logger.do_log('Terminating...')
-        logger.terminate = True
+        logger.terminate.value = True
+        logger.do_log(f'from my pov ter is: {logger.terminate}')
         return None
 
     def print_out(self, results):
-        if results:
+        if results.any():
             model = pandasModel(results)
             self.output.setModel(model)
-        logger.terminate = True
+        logger.terminate.value = True
         return None
 
     def thread_start(self):
-        logger.terminate = False
+        logger.terminate.value = False
         time.sleep(0.1)
         t1 = self.tp.apply_async(self.start_log)
         t2 = self.tp.apply_async(self.start, callback=self.print_out)
@@ -159,11 +160,14 @@ class UiMainWindow:
         self.start_button.setEnabled(bool(txt))
 
     def start_log(self):
-        while not logger.terminate:
+        while not logger.terminate.value:
             if logger.log:
                 self.log.append(logger.log)
                 logger.log = ''
             time.sleep(0.1)
+        time.sleep(0.5)
+        self.log.append(logger.log)
+        logger.log = ''
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
