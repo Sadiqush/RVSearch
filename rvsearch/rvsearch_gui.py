@@ -5,7 +5,7 @@ from multiprocessing.pool import ThreadPool
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pandas as pd
 
-from rvsearch.logger import Logger
+from rvsearch.logger import Logger as logger
 
 
 class pandasModel(QtCore.QAbstractTableModel):
@@ -122,26 +122,31 @@ class UiMainWindow:
         self.actionOpen.triggered.connect(self.file_opener)  # Open in menu
         self.actionExit.triggered.connect(self.exit_program)  # Exit in menu
         self.start_button.clicked.connect(self.thread_start)  # Start button
-        self.stop_button.clicked.connect(self.thread_stop)  # Stop button (not configed yet)
+        self.stop_button.clicked.connect(self.thread_stop)  # Stop button
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.start_button.setEnabled(False)
 
-    record_df = {}
-
-    @staticmethod
-    def thread_stop():
-        pass
+    def thread_stop(self):
+        logger.do_log('Terminating...')
+        logger.terminate = True
+        return None
 
     def print_out(self, results):
-        model = pandasModel(results)
-        self.output.setModel(model)
+        if results:
+            model = pandasModel(results)
+            self.output.setModel(model)
+        logger.terminate = True
+        return None
 
     def thread_start(self):
+        logger.terminate = False
+        time.sleep(0.1)
         t1 = self.tp.apply_async(self.start_log)
         t2 = self.tp.apply_async(self.start, callback=self.print_out)
+        return None
 
     def start(self):
-        self.log.append('Processing...')
+        logger.do_log('Processing...')
         from rvsearch.main import CoreProcess
         in_path = self.csvpath_input.text()  # Path for csv input
         out_path = self.csvpath_output.text()  # Path for csv output
@@ -152,13 +157,10 @@ class UiMainWindow:
         self.start_button.setEnabled(bool(txt))
 
     def start_log(self):
-        while True:
-            if Logger.log:
-                self.log.append(Logger.log)
-                # if Logger.log == 'All done':
-                #     Logger.log = ''
-                #     break
-                Logger.log = ''
+        while not logger.terminate:
+            if logger.log:
+                self.log.append(logger.log)
+                logger.log = ''
             time.sleep(0.1)
 
     def file_opener(self):

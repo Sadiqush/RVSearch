@@ -50,33 +50,34 @@ class CoreProcess:
             # Downloading
             cmp_file = self.downloader.get_video(com_url[0])
             for source_url in source_list:
-                # Downloading
-                src_file = self.downloader.get_video(source_url)
+                while not logger.terminate:
+                    # Downloading
+                    src_file = self.downloader.get_video(source_url)
 
-                # Getting things ready
-                if not vconf.QUIET: logger.do_log('Getting ready to start comparison process')
-                frames_cmp, meta_cmp = self.video_init(cmp_file)
-                frames_src, meta_src = self.video_init(src_file)
-                if not vconf.QUIET: logger.do_log(f'Comparing source: {meta_src["name"]}')
+                    # Getting things ready
+                    if not vconf.QUIET: logger.do_log('Getting ready to start comparison process')
+                    frames_cmp, meta_cmp = self.video_init(cmp_file)
+                    frames_src, meta_src = self.video_init(src_file)
+                    if not vconf.QUIET: logger.do_log(f'Comparing source: {meta_src["name"]}')
 
-                # Do the comparison
-                if not vconf.QUIET: logger.do_log('**Comparing started**\nIt may take a few minutes...')
-                time_stamps = self.compare_videos_parallel(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
-                if not vconf.QUIET:
-                    logger.do_log(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
+                    # Do the comparison
+                    if not vconf.QUIET: logger.do_log('**Comparing started**\nIt may take a few minutes...')
+                    time_stamps = self.compare_videos_parallel(frames_cmp, meta_cmp['fps'], frames_src, meta_src['fps'])
+                    if not vconf.QUIET:
+                        logger.do_log(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
 
-                record_df = record_similarity(time_stamps,
-                                              [meta_cmp['url'], meta_src['url']],
-                                              [meta_cmp['name'], meta_src['name']],
-                                              [meta_cmp['channel'], meta_src['channel']])
+                    record_df = record_similarity(time_stamps,
+                                                  [meta_cmp['url'], meta_src['url']],
+                                                  [meta_cmp['name'], meta_src['name']],
+                                                  [meta_cmp['channel'], meta_src['channel']])
 
-                # TODO: maybe save in comparing?
-                logger.do_log('Saving...')
-                if output_path:
-                    final_csv_name = save_csv(record_df, f'{self.currnt_path}/{output_path}')
-                else:
-                    final_csv_name = save_csv(record_df, f'{self.currnt_path}/{meta_cmp["name"]}_results.csv')
-                if not vconf.QUIET: logger.do_log(f'Results saved to {final_csv_name}')
+                    # TODO: maybe save in comparing?
+                    logger.do_log('Saving...')
+                    if output_path:
+                        final_csv_name = save_csv(record_df, f'{self.currnt_path}/{output_path}')
+                    else:
+                        final_csv_name = save_csv(record_df, f'{self.currnt_path}/{meta_cmp["name"]}_results.csv')
+                    if not vconf.QUIET: logger.do_log(f'Results saved to {final_csv_name}')
 
         if not vconf.QUIET: logger.do_log(f'====All done====')
         return record_df

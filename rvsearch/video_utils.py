@@ -59,21 +59,22 @@ class Video:
         for s_frame in source_frames:
             current_frame_s += source_fps  # Go up 1 second
             current_frame_t = 0  # One target done, now reset
-            for t_frame in target_frames:
-                current_frame_t += target_fps  # Go up 1 second
-                score = self.compare_hash_frames(s_frame, t_frame, hash_len=12)
-                if self.check_score(score, threshold=0.75):
-                    # Record its timestamp
-                    m1, s1 = divmod((current_frame_s / source_fps), 60)
-                    m2, s2 = divmod((current_frame_t / target_fps), 60)
-                    timestamps.append([[m1, s1], [m2, s2], score])
-                    if not vconf.QUIET:
-                        logger.do_log(f'Compilation video: similarity found at {int(m1)}:{int(s1)}')
-                    if vconf.VERBOSE:
-                        with _mutex:
-                            logger.do_log(timestamps[-1])
-                            logger.do_log("--- %s seconds ---" % (monotonic() - start))
-                    break  # First similarity in video, break
+            while not logger.terminate:
+                for t_frame in target_frames:
+                    current_frame_t += target_fps  # Go up 1 second
+                    score = self.compare_hash_frames(s_frame, t_frame, hash_len=12)
+                    if self.check_score(score, threshold=0.75):
+                        # Record its timestamp
+                        m1, s1 = divmod((current_frame_s / source_fps), 60)
+                        m2, s2 = divmod((current_frame_t / target_fps), 60)
+                        timestamps.append([[m1, s1], [m2, s2], score])
+                        if not vconf.QUIET:
+                            logger.do_log(f'Compilation video: similarity found at {int(m1)}:{int(s1)}')
+                        if vconf.VERBOSE:
+                            with _mutex:
+                                logger.do_log(timestamps[-1])
+                                logger.do_log("--- %s seconds ---" % (monotonic() - start))
+                        break  # First similarity in video, break
 
         if vconf.VERBOSE: logger.do_log("Elapsed time: --- %s seconds ---" % (monotonic() - start))
         return timestamps

@@ -3,6 +3,7 @@ import time
 
 class Logger:
     log = ''
+    terminate = False
 
     @staticmethod
     def do_log(text):
