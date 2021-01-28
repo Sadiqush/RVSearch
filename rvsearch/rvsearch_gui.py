@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import os
+import signal
 import time
 from multiprocessing.pool import ThreadPool
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-import pandas as pd
+import pandas as pd   # Don't remove this
 
 from rvsearch.logger import Logger as logger
 
@@ -174,7 +176,7 @@ class UiMainWindow:
 
     @staticmethod
     def exit_program():
-        exit()
+        os.kill(os.getpid(), signal.SIGUSR1)
 
 
 if __name__ == "__main__":
