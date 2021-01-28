@@ -38,7 +38,14 @@ setup(
         "setuptools",
         "scikit-video"
     ],
-
+    setup_requires=[
+        "pandas",
+        "youtube_dl",
+        "opencv-python",
+        "numpy",
+        "setuptools",
+        "scikit-video"
+    ],
     python_requires='>= 3',
 
     entry_points={'console_scripts': ['rvsearch = rvsearch.rvsearch_gui:run']}
