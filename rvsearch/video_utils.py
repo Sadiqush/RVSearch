@@ -67,7 +67,6 @@ class Video:
                     signals.do_log('Terminated')
                     return timestamps
                 if self.check_score(score, threshold=0.75):
-                    print('ter is: ', signals.terminate)
                     # Record its timestamp
                     m1, s1 = divmod((current_frame_s / source_fps), 60)
                     m2, s2 = divmod((current_frame_t / target_fps), 60)
@@ -75,6 +74,7 @@ class Video:
                     if not vconf.QUIET:
                         signals.do_log(f'Compilation video: similarity found at {int(m1)}:{int(s1)}')
                     if vconf.VERBOSE:
+                        signals.do_log(f'ter is: {signals.terminate.value}')
                         with _mutex:
                             signals.do_log(timestamps[-1])
                             signals.do_log("--- %s seconds ---" % (monotonic() - start))

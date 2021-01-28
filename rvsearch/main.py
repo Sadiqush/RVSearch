@@ -30,10 +30,9 @@ class CoreProcess:
         """Remove the tmp directory when you're done"""
         # dir_of_executable = os.path.dirname(__file__)
         # Path.rmdir(Path(dir_of_executable) / "rvidtmp/")
-        pass
         return None
 
-    def main(self, csv_path, output_path="", record_df={}):
+    def main(self, csv_path, output_path=""):
         """Main function: read csv, download videos, compare them, save results."""
         signals.do_log('Started')
         self.change_path()
