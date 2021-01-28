@@ -6,7 +6,7 @@ setup(
     name="rvsearch",
 
     # Version number (initial):
-    version="1.0.4.1",
+    version="1.1.0",
 
     # Application author details:
     author="Sadiq SheshKhan",
@@ -41,5 +41,5 @@ setup(
 
     python_requires='>= 3',
 
-    entry_points={'console_scripts': ['rvsearch = rvsearch.run:run']}
+    entry_points={'console_scripts': ['rvsearch = rvsearch.rvsearch_gui:run']}
 )
