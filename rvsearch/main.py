@@ -28,8 +28,8 @@ class CoreProcess:
     @staticmethod
     def clean():
         """Remove the tmp directory when you're done"""
-        # dir_of_executable = os.path.dirname(__file__)
-        # Path.rmdir(Path(dir_of_executable) / "rvidtmp/")
+        dir_of_executable = os.path.dirname(__file__)
+        Path.rmdir(Path(dir_of_executable) / "rvidtmp/")
         return None
 
     def main(self, csv_path, output_path=""):
