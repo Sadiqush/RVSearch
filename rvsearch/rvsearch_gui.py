@@ -189,7 +189,7 @@ class UiMainWindow:
         os.kill(os.getpid(), sig.SIGUSR1)
 
 
-if __name__ == "__main__":
+def run():
     import sys
 
     app = QtWidgets.QApplication(sys.argv)
@@ -198,3 +198,7 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    run()
