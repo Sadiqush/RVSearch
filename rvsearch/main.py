@@ -81,6 +81,7 @@ class CoreProcess:
                     else:
                         final_csv_name = save_csv(record_df, f'{self.currnt_path}/{meta_cmp["name"]}_results.csv')
                     if not vconf.QUIET: signals.do_log(f'Results saved to {final_csv_name}')
+                    break
 
         if not vconf.QUIET: signals.do_log(f'====All done====')
         return record_df
