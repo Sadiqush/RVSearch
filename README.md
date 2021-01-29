@@ -17,7 +17,7 @@ Requirements
 
 For other missing packages first you need to install them using `pip`:
 ```
-python3 pip install pandas youtube_dl opencv-python numpy setuptools scikit-video PyQt5 Pillow pip pytz scipy python-dateutil six
+pip install pandas youtube_dl opencv-python numpy setuptools scikit-video PyQt5 Pillow pip pytz scipy python-dateutil six
 ```
 
 Installation:
