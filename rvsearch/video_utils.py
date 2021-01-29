@@ -63,7 +63,7 @@ class Video:
             for t_frame in target_frames:
                 current_frame_t += target_fps  # Go up 1 second
                 score = self.compare_hash_frames(s_frame, t_frame, hash_len=12)
-                if signals.terminate.value:
+                if not signals.working:
                     signals.do_log('Terminated')
                     return timestamps
                 if self.check_score(score, threshold=0.75):
@@ -74,7 +74,7 @@ class Video:
                     if not vconf.QUIET:
                         signals.do_log(f'Compilation video: similarity found at {int(m1)}:{int(s1)}')
                     if vconf.VERBOSE:
-                        signals.do_log(f'ter is: {signals.terminate.value}')
+                        signals.do_log(f'ter is: {signals.working}')
                         with _mutex:
                             signals.do_log(timestamps[-1])
                             signals.do_log("--- %s seconds ---" % (monotonic() - start))

@@ -49,7 +49,7 @@ class CoreProcess:
             # Downloading
             cmp_file = self.downloader.get_video(com_url[0])
             for source_url in source_list:
-                while not signals.terminate.value:
+                while signals.working:
                     # Downloading
                     src_file = self.downloader.get_video(source_url)
 
@@ -60,7 +60,7 @@ class CoreProcess:
                     if not vconf.QUIET: signals.do_log(f'Comparing source: {meta_src["name"]}')
 
                     # Do the comparison
-                    if signals.terminate.value:
+                    if not signals.working:
                         signals.do_log('Terminated')
                         return None
 
@@ -88,6 +88,6 @@ class CoreProcess:
 
 
 # TODO: add logger
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     main = CoreProcess()
-    main.main(['/home/sadegh/video_search_test.csv'])
+    main.main(['/home/sadegh/video_search_test.csv'])"""
