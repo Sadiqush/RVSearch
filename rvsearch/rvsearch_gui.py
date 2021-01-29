@@ -149,6 +149,7 @@ class UiMainWindow:
         return None
 
     def thread_start(self):
+        signals.working = True
         time.sleep(0.1)
         t1 = self.tp.apply_async(
             self.start, callback=self.print_out, error_callback=self.on_error_raised)
