@@ -4,7 +4,6 @@ import multiprocessing as mp
 
 import numpy as np
 import cv2
-from skvideo.io import ffprobe
 
 import rvsearch.imagehash as ih
 import rvsearch.config as vconf
@@ -20,7 +19,7 @@ class Video:
                     'channel': vid_info[2],
                     'url': vid_info[3]}
         vid = cv2.VideoCapture(vid_meta['path'])  # TODO: GPU accelrate
-        fps = self.get_video_fps(vid_meta['path'])
+        fps = vid.get(cv2.CAP_PROP_FPS)
         vid_meta['fps'] = fps
 
         # Save frames into RAM
@@ -102,6 +101,8 @@ class Video:
 
     def get_video_fps(self, filename: str) -> int:
         """Read the video using ffprobe and return its frame per second ratio"""
+        from skvideo.io import ffprobe
+
         md: object = ffprobe(filename)['video']
         fr, ps = md['@r_frame_rate'].split('/')
         fps = int(fr) / int(ps)
