@@ -4,11 +4,10 @@ import signal as sig
 import time
 from multiprocessing.pool import ThreadPool
 
+import pandas as pd  # Don't remove this
 from PyQt5 import QtCore, QtGui, QtWidgets
-import pandas as pd   # Don't remove this
 
-import rvsearch.config as vconf
-from rvsearch.signals import Signals as signals
+_ = pd.DataFrame
 
 
 class pandasModel(QtCore.QAbstractTableModel):
@@ -73,6 +72,7 @@ class UiMainWindow:
         self.log = QtWidgets.QTextBrowser(self.centralwidget)
         self.log.setGeometry(QtCore.QRect(20, 160, 641, 141))
         self.log.setObjectName("log")
+        signals.connect(self.on_text_changed)
         self.start_button = QtWidgets.QPushButton(self.centralwidget)
         self.start_button.setGeometry(QtCore.QRect(250, 130, 80, 23))
         self.start_button.setObjectName("start_button")
@@ -130,10 +130,12 @@ class UiMainWindow:
         self.start_button.setEnabled(False)
 
     def thread_stop(self):
+        signals.working = False
         signals.do_log('Terminating...')
-        signals.terminate.value = True
-        if vconf.VERBOSE: signals.do_log(f'qt pov: {signals.terminate}')
         return None
+
+    def on_text_changed(self, text):
+        self.log.append(text)
 
     def print_out(self, results):
         try:
@@ -142,15 +144,19 @@ class UiMainWindow:
                 self.output.setModel(model)
         except (AttributeError, ValueError):
             pass
-        signals.terminate.value = True
         return None
 
     def thread_start(self):
-        signals.terminate.value = False
         time.sleep(0.1)
-        t1 = self.tp.apply_async(self.start_log)
-        t2 = self.tp.apply_async(self.start, callback=self.print_out)
+        t1 = self.tp.apply_async(
+            self.start, callback=self.print_out, error_callback=self.on_error_raised)
         return None
+
+    def on_error_raised(self, error:BaseException):
+        print("Wholesome error moment 100!!!! Ebic!!1!1!1")
+        self.log.setTextColor(QtGui.QColor(QtGui.QColor(255,0,0)))
+        self.log.append(str(error))
+        raise error
 
     def start(self):
         signals.do_log('Processing...')
@@ -162,18 +168,6 @@ class UiMainWindow:
 
     def on_csv_input_edit(self, txt):
         self.start_button.setEnabled(bool(txt))
-
-    def start_log(self):
-        while not signals.terminate.value:
-            if signals.log:
-                self.log.append(signals.log)
-                signals.log = ''
-            time.sleep(0.1)
-        # Left over signals:
-        time.sleep(0.8)
-        self.log.append(signals.log)
-        signals.log = ''
-        return None
 
     def file_opener(self):
         _translate = QtCore.QCoreApplication.translate
@@ -201,4 +195,5 @@ def run():
 
 
 if __name__ == "__main__":
+    from rvsearch.signals import Signals as signals
     run()
