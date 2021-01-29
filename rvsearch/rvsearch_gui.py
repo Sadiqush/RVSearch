@@ -155,7 +155,7 @@ class UiMainWindow:
         return None
 
     def on_error_raised(self, error:BaseException):
-        print("Wholesome error moment 100!!!! Ebic!!1!1!1")
+        print("An error occurred")
         self.log.setTextColor(QtGui.QColor(QtGui.QColor(255,0,0)))
         self.log.append(str(error))
         raise error
