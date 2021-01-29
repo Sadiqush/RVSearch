@@ -35,6 +35,7 @@ class CoreProcess:
     def main(self, csv_path, output_path=""):
         """Main function: read csv, download videos, compare them, save results."""
         signals.do_log('Started')
+        record_df = {}
         self.change_path()
         if not csv_path[0]:
             signals.do_log('You have not provided any input')
