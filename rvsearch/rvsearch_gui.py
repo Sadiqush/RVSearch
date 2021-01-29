@@ -7,6 +7,8 @@ from multiprocessing.pool import ThreadPool
 import pandas as pd  # Don't remove this
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from rvsearch.signals import Signals as signals
+
 _ = pd.DataFrame
 
 
@@ -185,7 +187,7 @@ class UiMainWindow:
 
 def run():
     import sys
-
+    
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = UiMainWindow()
@@ -195,5 +197,4 @@ def run():
 
 
 if __name__ == "__main__":
-    from rvsearch.signals import Signals as signals
     run()
