@@ -8,7 +8,13 @@ from rvsearch.signals import Signals as signals
 def _load_csv(inpath):
     """Loads the csv file and checks if the file is ok."""
     df = pd.read_csv(str(inpath))
+    # If the seperator is ';' read it as ';'
+    if len(df.columns.to_list()) == 1:
+        df = pd.read_csv(str(inpath), sep=';')
     if {"Compilation", "Source"}.issubset(df.columns):
+        df.rename(columns={'Compilation': 'compilation', 'Source': 'source'}, inplace=True)
+        return df
+    elif {"Compilation".lower(), "Source".lower()}.issubset(df.columns):
         # TODO: check the dtype
         return df
     else:
@@ -18,8 +24,8 @@ def _load_csv(inpath):
 def read_csv(inpath):
     """Reads the columns of the csv file and returns them."""
     df = _load_csv(inpath)
-    compilation = df["Compilation"].tolist()
-    sources = df["Source"].tolist()
+    compilation = df["Compilation".lower()].tolist()
+    sources = df["Source".lower()].tolist()
     return compilation, sources
 
 
