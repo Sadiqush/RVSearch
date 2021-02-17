@@ -25,7 +25,8 @@ class Downloader:
         ydl_opts = {
             'outtmpl': '%(id)s.%(ext)s',
             # Best video, but no better than 144p
-            'format': 'bestvideo[height<=144][ext=mp4]'
+            'format': 'bestvideo[height<=144][ext=mp4]',
+            'nocheckcertificate': True
         }
         if not vconf.QUIET:
             ydl_opts['logger'] = self.MyLogger()
@@ -54,7 +55,7 @@ class Downloader:
 
     def _get_info(self, url) -> object:
         """Get video's information. Also, if the URL is a playlist, RAISE."""
-        with youtube_dl.YoutubeDL({'logger': self.MyLogger()}) as ydl:
+        with youtube_dl.YoutubeDL({'logger': self.MyLogger(), 'nocheckcertificate': True}) as ydl:
             result = ydl.extract_info(url, download=False)
             id = result['id']
             name = result['title']
