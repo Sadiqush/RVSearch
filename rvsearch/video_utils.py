@@ -26,7 +26,7 @@ class Video:
         if not vconf.QUIET:
             signals.do_log(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
             start = monotonic()
-        frames = self.get_frames(vid, vid_meta['path'], fps)
+        frames = self.get_frames(vid, int(fps))
         if vconf.VERBOSE: signals.do_log(f'Loading took {monotonic() - start} seconds')
         return frames, vid_meta
 
@@ -82,7 +82,7 @@ class Video:
         if vconf.VERBOSE: signals.do_log("Elapsed time: --- %s seconds ---" % (monotonic() - start))
         return timestamps
 
-    def get_frames(self, vid, vid_name, fps) -> list:
+    def get_frames(self, vid, fps) -> list:
         """Get all the frames in a video object, return as a list."""
         frame_list = []
         total_frames = vid.get(7)
