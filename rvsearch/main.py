@@ -78,7 +78,8 @@ class CoreProcess:
                     # TODO: maybe save in comparing?
                     signals.do_log('Saving...')
                     if output_path:
-                        final_csv_name = save_csv(record_df, f'{self.currnt_path}/{output_path}')
+                        print(f'OUTPUT IS: ========={self.currnt_path}/{output_path}.csv')
+                        final_csv_name = save_csv(record_df, f'{self.currnt_path}/{output_path}.csv')
                     else:
                         final_csv_name = save_csv(record_df, f'{self.currnt_path}/{meta_cmp["name"]}_results.csv')
                     if not vconf.QUIET: signals.do_log(f'Results saved to {final_csv_name}')
