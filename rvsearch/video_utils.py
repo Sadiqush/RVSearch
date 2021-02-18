@@ -26,7 +26,7 @@ class Video:
         if not vconf.QUIET:
             signals.do_log(f"Loading video: {vid_meta['path']} -- {vid_meta['name']}")
             start = monotonic()
-        frames = self.get_frames(vid, vid_meta['path'])
+        frames = self.get_frames(vid, vid_meta['path'], fps)
         if vconf.VERBOSE: signals.do_log(f'Loading took {monotonic() - start} seconds')
         return frames, vid_meta
 
@@ -82,11 +82,10 @@ class Video:
         if vconf.VERBOSE: signals.do_log("Elapsed time: --- %s seconds ---" % (monotonic() - start))
         return timestamps
 
-    def get_frames(self, vid, vid_name) -> list:
+    def get_frames(self, vid, vid_name, fps) -> list:
         """Get all the frames in a video object, return as a list."""
         frame_list = []
         total_frames = vid.get(7)
-        fps = self.get_video_fps(vid_name)
         for i in range(1, int(total_frames), fps):  # 30fps is 30 frames per second.
             frame = self.get_the_frame(vid, i)
             frame_list.append(frame)
@@ -98,15 +97,6 @@ class Video:
         vid.set(1, frm_n)
         ret, frame = vid.read()
         return frame
-
-    def get_video_fps(self, filename: str) -> int:
-        """Read the video using ffprobe and return its frame per second ratio"""
-        from skvideo.io import ffprobe
-
-        md: object = ffprobe(filename)['video']
-        fr, ps = md['@r_frame_rate'].split('/')
-        fps = int(fr) / int(ps)
-        return round(fps)
 
     def _hasher(self, img, hash_len):
         """pHash the image"""
