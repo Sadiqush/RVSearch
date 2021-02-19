@@ -24,7 +24,7 @@ setup(
     url="http://pypi.org/project/rvsearch",
 
     # license
-    license="GLPv3",
+    license="GPLv3",
     description="Tool to reverse search videos on YouTube based on frame similarities found",
 
     long_description=open("README.md").read(),
