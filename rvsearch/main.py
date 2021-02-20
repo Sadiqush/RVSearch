@@ -1,8 +1,10 @@
 import os
 from pathlib import Path
 
+import pandas as pd
+
 from rvsearch.video_utils import Video
-from rvsearch.csv_handle import read_csv, save_csv, record_similarity
+from rvsearch.csv_handle import read_csv, save_csv, record_similarity, init_record_file
 from rvsearch.downloader import Downloader
 import rvsearch.config as vconf
 from rvsearch.signals import Signals as signals
@@ -35,7 +37,7 @@ class CoreProcess:
     def main(self, csv_path, output_path=""):
         """Main function: read csv, download videos, compare them, save results."""
         signals.do_log('Started')
-        record_df = {}
+        record_df = init_record_file()
         self.change_path()
         if not csv_path[0]:
             signals.do_log('You have not provided any input')
@@ -70,7 +72,7 @@ class CoreProcess:
                     if not vconf.QUIET:
                         signals.do_log(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
 
-                    record_df = record_similarity(time_stamps,
+                    record_df = record_similarity(record_df, time_stamps,
                                                   [meta_cmp['url'], meta_src['url']],
                                                   [meta_cmp['name'], meta_src['name']],
                                                   [meta_cmp['channel'], meta_src['channel']])
@@ -84,7 +86,7 @@ class CoreProcess:
                         final_csv_name = save_csv(record_df, f'{self.currnt_path}/{meta_cmp["name"]}_results.csv')
                     if not vconf.QUIET: signals.do_log(f'Results saved to {final_csv_name}')
                     break
-
+                # yield record_df
         if not vconf.QUIET: signals.do_log(f'====All done====')
         return record_df
 

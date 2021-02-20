@@ -49,10 +49,9 @@ def _check_and_rename(file_name, add=0) -> str:
     return file_name
 
 
-def record_similarity(timestamps, urls, names, channels):
+def record_similarity(record_df, timestamps, urls, names, channels):
     """When you find a similar video, save its information to a dataframe then give it back."""
     # If you want to dynamically save .csv, init before recording
-    record_df = init_record_file()
     signals.do_log(f'Found {len(timestamps[0])} similar frames')
     for thread_res in timestamps:
         for stamp in thread_res:
@@ -76,6 +75,6 @@ def record_similarity(timestamps, urls, names, channels):
 
 def save_csv(df: pd.DataFrame, csv_name="results"):
     """Saves a dataframe to a .csv file with precautions."""
-    csv_name = _check_and_rename(csv_name)
+    # csv_name = _check_and_rename(csv_name)
     df.to_csv(f'{csv_name}', index=True)
     return csv_name
