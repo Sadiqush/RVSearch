@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 
-import pandas as pd
 
 from rvsearch.video_utils import Video
 from rvsearch.csv_handle import read_csv, save_csv, record_similarity, init_record_file
