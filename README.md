@@ -101,4 +101,4 @@ rvsearch input1.csv input2.csv -o results.csv -q
 ## License
 
 Copyright (c) 2021 by [sadiqush](https://github.com/sadiqush). All rights reserved.<br>
-[RVSearch](https://github.com/sadiqush/rvsearch) is licensed under the GLPv3 License as stated in the [LICENSE file](LICENSE).
+[RVSearch](https://github.com/sadiqush/rvsearch) is licensed under the GPLv3 License as stated in the [LICENSE file](LICENSE).
