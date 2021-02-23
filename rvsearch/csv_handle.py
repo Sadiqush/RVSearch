@@ -1,6 +1,8 @@
 import pandas as pd
 from pathlib import Path
 
+import numpy as np
+
 import rvsearch.config as vconf
 from rvsearch.signals import Signals as signals
 
@@ -25,7 +27,10 @@ def read_csv(inpath):
     """Reads the columns of the csv file and returns them."""
     df = _load_csv(inpath)
     compilation = df["Compilation".lower()].tolist()
-    sources = df["Source".lower()].tolist()
+
+    _2d = [content.tolist() for label, content in df["Source".lower()].items()]
+    _1d = np.array(_2d).flatten()
+    sources = _1d[_1d != np.array(None)].tolist()   # Removes 'None' from list
     return compilation, sources
 
 
