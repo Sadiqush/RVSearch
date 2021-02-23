@@ -33,7 +33,8 @@ def read_csv(inpath):
 
     _2d = [content.tolist() for label, content in df["Source".lower()].items()]
     _1d = np.array(_2d).flatten()
-    sources = _1d[_1d != np.array(None)].tolist()   # Removes 'None' from list
+    sources = [field for field in _1d if field != 'nan']   # Removes 'None' from list
+    compilation = [field for field in compilation if pd.notnull(field)]
     return compilation, sources
 
 
