@@ -9,7 +9,10 @@ from rvsearch.signals import Signals as signals
 
 def _load_csv(inpath):
     """Loads the csv file and checks if the file is ok."""
-    df = pd.read_csv(str(inpath))
+    df = pd.read_csv(str(inpath), header=None)
+    # Support for duplicate column names
+    df = df.rename(columns=df.iloc[0], copy=False).iloc[1:].reset_index(drop=True)
+
     # If the seperator is ';' read it as ';'
     if len(df.columns.to_list()) == 1:
         df = pd.read_csv(str(inpath), sep=';')
