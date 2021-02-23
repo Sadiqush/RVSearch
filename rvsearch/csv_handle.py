@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+import datetime
 
 import numpy as np
 
@@ -87,3 +88,28 @@ def save_csv(df: pd.DataFrame, csv_name="results"):
     # csv_name = _check_and_rename(csv_name)
     df.to_csv(f'{csv_name}', index=True)
     return csv_name
+
+
+def cluster_timestamps(df):
+    range_start, time_range = make_time_ranges(df)
+    pass
+
+
+def make_time_ranges(df):
+    timestamps = df['Cmp_TimeStamp'].to_list()
+    time_ranges = []
+    range_start = []
+    includes = []
+    for stamp in timestamps:
+        now = datetime.datetime.strptime(stamp, "%M:%S")
+        includes.append(now.time().strftime("%M:%S"))
+        next = now + datetime.timedelta(seconds=1)
+        if next.time().strftime("%M:%S") in timestamps:
+            continue
+        else:
+            start = includes[0]
+            end = now.time().strftime("%M:%S")
+            time_ranges.append(start) if start == end else time_ranges.append(f'{start}-{end}')
+            range_start.append(start)
+            includes = []
+    return range_start, time_ranges
