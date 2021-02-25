@@ -153,8 +153,6 @@ class UiMainWindow:
         time.sleep(0.1)
         t1 = self.tp.apply_async(
             self.start, callback=self.print_out, error_callback=self.on_error_raised)
-        print(type(t1))
-        print(t1)
         return None
 
     def on_error_raised(self, error: BaseException):
