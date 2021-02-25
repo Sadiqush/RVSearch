@@ -77,6 +77,7 @@ class CoreProcess:
                                                   [meta_cmp['url'], meta_src['url']],
                                                   [meta_cmp['name'], meta_src['name']],
                                                   [meta_cmp['channel'], meta_src['channel']])
+                    record_df = cluster_timestamps(record_df)
                     break
         record_df = self.save_results(record_df, output_path, meta_cmp["name"])
         if not vconf.QUIET: signals.do_log(f'====All done====')
@@ -84,7 +85,6 @@ class CoreProcess:
 
     def save_results(self, record_df, output, name):
         # TODO: maybe save in comparing?
-        record_df = cluster_timestamps(record_df)
         signals.do_log('Saving...')
         home_path = os.path.expanduser('~')
         if output:
