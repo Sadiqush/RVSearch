@@ -77,19 +77,21 @@ class CoreProcess:
                                                   [meta_cmp['url'], meta_src['url']],
                                                   [meta_cmp['name'], meta_src['name']],
                                                   [meta_cmp['channel'], meta_src['channel']])
-
-                    # TODO: maybe save in comparing?
-                    record_df = cluster_timestamps(record_df)
-                    signals.do_log('Saving...')
-                    if output_path:
-                        print(f'OUTPUT IS: ========={self.currnt_path}/{output_path}.csv')
-                        final_csv_name = save_csv(record_df, f'{self.currnt_path}/{output_path}.csv')
-                    else:
-                        final_csv_name = save_csv(record_df, f'{self.currnt_path}/{meta_cmp["name"]}_results.csv')
-                    if not vconf.QUIET: signals.do_log(f'Results saved to {final_csv_name}')
                     break
-            # yield record_df
+        record_df = self.save_results(record_df, output_path, meta_cmp["name"])
         if not vconf.QUIET: signals.do_log(f'====All done====')
+        return record_df
+
+    def save_results(self, record_df, output_path, name):
+        # TODO: maybe save in comparing?
+        record_df = cluster_timestamps(record_df)
+        signals.do_log('Saving...')
+        if output_path:
+            print(f'OUTPUT IS: ========={self.currnt_path}/{output_path}.csv')
+            final_csv_name = save_csv(record_df, f'{self.currnt_path}/{output_path}.csv')
+        else:
+            final_csv_name = save_csv(record_df, f'{self.currnt_path}/{name}_results.csv')
+        if not vconf.QUIET: signals.do_log(f'Results saved to {final_csv_name}')
         return record_df
 
 
