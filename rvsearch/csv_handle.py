@@ -68,7 +68,7 @@ def record_similarity(record_df, timestamps, urls, names, channels):
             # TODO: Sum near timestamps together
             m1, s1 = stamp[0][0], stamp[0][1]
             m2, s2 = stamp[1][0], stamp[1][1]
-            score = stamp[2]
+            score = stamp[2]  # Not used, but can be
 
             info = {'Cmpl_url': f'{urls[0]}',
                     'Cmp_name': names[0],
@@ -76,8 +76,8 @@ def record_similarity(record_df, timestamps, urls, names, channels):
                     'Source_url': f'{urls[1]}',
                     'Source_name': names[1],
                     'Source_chnl': channels[1],
-                    'Cmp_TimeStamp': f'{int(m1)}:{int(s1)}',
-                    'Source_TimeStamp': f'{int(m2)}:{int(s2)}'}
+                    'Cmp_TimeStamp': fix_time(f'{int(m1)}:{int(s1)}'),
+                    'Source_TimeStamp': fix_time(f'{int(m2)}:{int(s2)}')}
             if vconf.VERBOSE: signals.do_log(str(info))
             record_df = record_df.append(info, ignore_index=True)
     return record_df
@@ -91,6 +91,11 @@ def save_csv(df: pd.DataFrame, csv_name="results"):
 
 
 def cluster_timestamps(df):
+    """
+    From a dataframe clusters seperated timestamps together.
+    Example:
+        1:3, 1:4, 1:5, 1:6 -> 01:03 - 01:06
+    """
     range_start, time_range = make_time_ranges(df)
 
     newdf = pd.DataFrame()
@@ -106,6 +111,11 @@ def cluster_timestamps(df):
 
 
 def make_time_ranges(df):
+    """
+    Goes through the dataframe and makes two lists out of timestamps:
+        time_ranges = ['01:02', '01:04-01:25', '01:26-01:28']
+        range_start = ['01:02', '01:04', '01:26']
+    """
     timestamps = df['Cmp_TimeStamp'].to_list()
     time_ranges = []
     range_start = []
@@ -114,12 +124,28 @@ def make_time_ranges(df):
         now = datetime.datetime.strptime(stamp, "%M:%S")
         includes.append(now.time().strftime("%M:%S"))
         next = now + datetime.timedelta(seconds=1)
+        print(next.time().strftime("%M:%S"))
         if next.time().strftime("%M:%S") in timestamps:
             continue
         else:
+            print('adding ', includes[0], ' for start')
             start = includes[0]
             end = now.time().strftime("%M:%S")
+            print('adding ', end, ' for end')
             time_ranges.append(start) if start == end else time_ranges.append(f'{start}-{end}')
             range_start.append(start)
             includes = []
     return range_start, time_ranges
+
+
+def fix_time(stamp):
+    """ 2:3 -> 02:03 """
+    stamp = datetime.datetime.strptime(stamp, "%M:%S")
+    stamp = stamp.time().strftime("%M:%S")
+    return stamp
+
+
+if __name__ == "__main__":
+    a, b, = make_time_ranges(['01:01', '01:17', '01:18', '01:19', '01:20', '01:39', '01:40', '01:41', '01:42', '02:29'])
+    print(a)
+    print(b)
