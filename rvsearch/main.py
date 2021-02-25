@@ -82,15 +82,16 @@ class CoreProcess:
         if not vconf.QUIET: signals.do_log(f'====All done====')
         return record_df
 
-    def save_results(self, record_df, output_path, name):
+    def save_results(self, record_df, output, name):
         # TODO: maybe save in comparing?
         record_df = cluster_timestamps(record_df)
         signals.do_log('Saving...')
-        if output_path:
-            print(f'OUTPUT IS: ========={self.currnt_path}/{output_path}.csv')
-            final_csv_name = save_csv(record_df, f'{self.currnt_path}/{output_path}.csv')
+        home_path = os.path.expanduser('~')
+        if output:
+            save_path = os.path.join(home_path, 'Documents', f'{output}.csv')
         else:
-            final_csv_name = save_csv(record_df, f'{self.currnt_path}/{name}_results.csv')
+            save_path = os.path.join(home_path, 'Documents', f'{name}_results.csv')
+        final_csv_name = save_csv(record_df, f'{save_path}')
         if not vconf.QUIET: signals.do_log(f'Results saved to {final_csv_name}')
         return record_df
 
