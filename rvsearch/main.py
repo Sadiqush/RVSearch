@@ -3,7 +3,9 @@ from pathlib import Path
 
 
 from rvsearch.video_utils import Video
-from rvsearch.csv_handle import read_csv, save_csv, record_similarity, init_record_file
+from rvsearch.csv_handle import \
+    (read_csv, save_csv, record_similarity,
+     init_record_file, cluster_timestamps)
 from rvsearch.downloader import Downloader
 import rvsearch.config as vconf
 from rvsearch.signals import Signals as signals
@@ -77,6 +79,7 @@ class CoreProcess:
                                                   [meta_cmp['channel'], meta_src['channel']])
 
                     # TODO: maybe save in comparing?
+                    record_df = cluster_timestamps(record_df)
                     signals.do_log('Saving...')
                     if output_path:
                         print(f'OUTPUT IS: ========={self.currnt_path}/{output_path}.csv')

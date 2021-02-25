@@ -86,7 +86,6 @@ def record_similarity(record_df, timestamps, urls, names, channels):
 def save_csv(df: pd.DataFrame, csv_name="results"):
     """Saves a dataframe to a .csv file with precautions."""
     # csv_name = _check_and_rename(csv_name)
-    df = cluster_timestamps(df)
     df.to_csv(f'{csv_name}', index=True)
     return csv_name
 
