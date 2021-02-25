@@ -6,7 +6,7 @@ setup(
     name="rvsearch",
 
     # Version number (initial):
-    version="1.2.0",
+    version="1.2.1",
 
     # Application author details:
     author="Sadiq SheshKhan",
