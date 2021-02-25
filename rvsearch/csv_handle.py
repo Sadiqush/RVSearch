@@ -43,7 +43,7 @@ def init_record_file() -> pd.DataFrame:
     """Make the format for the final .csv file."""
     record_style = ['Cmpl_url', 'Cmp_name', 'Cmp_chnl',
                     'Source_url', 'Source_name', 'Source_chnl',
-                    'Cmp_TimeStamp', 'Source_TimeStamp']
+                    'Cmp_TimeStamp', 'Source_TimeStamp', 'Cmp_TimeStamps']
     record_df = pd.DataFrame(columns=record_style)
     return record_df
 
@@ -97,7 +97,7 @@ def cluster_timestamps(df):
         1:3, 1:4, 1:5, 1:6 -> 01:03 - 01:06
     """
     range_start, time_range = make_time_ranges(df)
-
+    # print('these are times: ', range_start, time_range)
     newdf = pd.DataFrame()
     for time in df['Cmp_TimeStamp']:
         if time in range_start:
@@ -105,8 +105,9 @@ def cluster_timestamps(df):
             newdf = newdf.append(df.loc[mask], ignore_index=True)
 
     for index, row in newdf.iterrows():
-        newdf.at[index, 'Cmp_TimeStamp'] = time_range[index]
-
+        newdf.at[index, 'Cmp_TimeStamps'] = time_range[index]
+    newdf = newdf.append(df.loc[df['Cmp_TimeStamps'].notnull()])
+    newdf = newdf.drop(['Cmp_TimeStamp'], axis=1)
     return newdf
 
 
@@ -117,6 +118,7 @@ def make_time_ranges(df):
         range_start = ['01:02', '01:04', '01:26']
     """
     timestamps = df['Cmp_TimeStamp'].to_list()
+    timestamps = [x for x in timestamps if pd.notnull(x)]
     time_ranges = []
     range_start = []
     includes = []
