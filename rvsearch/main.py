@@ -78,8 +78,8 @@ class CoreProcess:
                                                   [meta_cmp['name'], meta_src['name']],
                                                   [meta_cmp['channel'], meta_src['channel']])
                     record_df = cluster_timestamps(record_df)
+                    self.save_results(record_df, output_path, meta_cmp["name"])
                     break
-        record_df = self.save_results(record_df, output_path, meta_cmp["name"])
         if not vconf.QUIET: signals.do_log(f'====All done====')
         return record_df
 
@@ -93,7 +93,7 @@ class CoreProcess:
             save_path = os.path.join(home_path, 'Documents', f'{name}_results.csv')
         final_csv_name = save_csv(record_df, f'{save_path}')
         if not vconf.QUIET: signals.do_log(f'Results saved to {final_csv_name}')
-        return record_df
+        return None
 
 
 # TODO: add logger
