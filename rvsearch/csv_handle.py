@@ -86,13 +86,24 @@ def record_similarity(record_df, timestamps, urls, names, channels):
 def save_csv(df: pd.DataFrame, csv_name="results"):
     """Saves a dataframe to a .csv file with precautions."""
     # csv_name = _check_and_rename(csv_name)
+    df = cluster_timestamps(df)
     df.to_csv(f'{csv_name}', index=True)
     return csv_name
 
 
 def cluster_timestamps(df):
     range_start, time_range = make_time_ranges(df)
-    pass
+
+    newdf = pd.DataFrame()
+    for time in df['Cmp_TimeStamp']:
+        if time in range_start:
+            mask = df['Cmp_TimeStamp'].str.contains(time, na=False)
+            newdf = newdf.append(df.loc[mask], ignore_index=True)
+
+    for index, row in newdf.iterrows():
+        newdf.at[index, 'Cmp_TimeStamp'] = time_range[index]
+
+    return newdf
 
 
 def make_time_ranges(df):
