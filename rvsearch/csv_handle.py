@@ -97,7 +97,6 @@ def cluster_timestamps(df):
         1:3, 1:4, 1:5, 1:6 -> 01:03 - 01:06
     """
     range_start, time_range = make_time_ranges(df)
-    # print('these are times: ', range_start, time_range)
     newdf = pd.DataFrame()
     for time in df['Cmp_TimeStamp']:
         if time in range_start:
@@ -126,14 +125,14 @@ def make_time_ranges(df):
         now = datetime.datetime.strptime(stamp, "%M:%S")
         includes.append(now.time().strftime("%M:%S"))
         next = now + datetime.timedelta(seconds=1)
-        print(next.time().strftime("%M:%S"))
+        # print(next.time().strftime("%M:%S"))
         if next.time().strftime("%M:%S") in timestamps:
             continue
         else:
-            print('adding ', includes[0], ' for start')
+            # print('adding ', includes[0], ' for start')
             start = includes[0]
             end = now.time().strftime("%M:%S")
-            print('adding ', end, ' for end')
+            # print('adding ', end, ' for end')
             time_ranges.append(start) if start == end else time_ranges.append(f'{start}-{end}')
             range_start.append(start)
             includes = []
