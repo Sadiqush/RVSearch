@@ -31,10 +31,14 @@ def read_csv(inpath):
     """Reads the columns of the csv file and returns them."""
     df = _load_csv(inpath)
     compilation = df["Compilation".lower()].tolist()
-
-    _2d = [content.tolist() for label, content in df["Source".lower()].items()]
-    _1d = np.array(_2d).flatten()
-    sources = [field for field in _1d if field != 'nan']   # Removes 'None' from list
+    len_df = len(df.columns)
+    if len_df == 2:
+        _1d = df["Source".lower()].tolist()
+        sources = [field for field in _1d if pd.notnull(field)]  # Removes 'None' from list
+    else:
+        _2d = [content.tolist() for label, content in df["Source".lower()].items()]
+        _1d = np.array(_2d).flatten()
+        sources = [field for field in _1d if field != 'nan']   # Removes 'None' from list
     compilation = [field for field in compilation if pd.notnull(field)]
     return compilation, sources
 
