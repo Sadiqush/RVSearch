@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 
-
 from rvsearch.video_utils import Video
 from rvsearch.csv_handle import \
     (read_csv, save_csv, record_similarity,
@@ -15,7 +14,7 @@ class CoreProcess:
     def __init__(self):
         self.currnt_path = os.getcwd()
         self.file_path = os.path.dirname(__file__)
-        self. downloader = Downloader()
+        self.downloader = Downloader()
         video = Video()
         self.video_init = video.video_init
         self.compare_videos_parallel = video.compare_videos_parallel
@@ -73,12 +72,13 @@ class CoreProcess:
                     if not vconf.QUIET:
                         signals.do_log(f"Comparing {meta_cmp['path']} and {meta_src['path']} finished")
 
-                    record_df = record_similarity(record_df, time_stamps,
-                                                  [meta_cmp['url'], meta_src['url']],
-                                                  [meta_cmp['name'], meta_src['name']],
-                                                  [meta_cmp['channel'], meta_src['channel']])
-                    record_df = cluster_timestamps(record_df)
-                    self.save_results(record_df, output_path, meta_cmp["name"])
+                    record_df, success = record_similarity(record_df, time_stamps,
+                                                           [meta_cmp['url'], meta_src['url']],
+                                                           [meta_cmp['name'], meta_src['name']],
+                                                           [meta_cmp['channel'], meta_src['channel']])
+                    if success:
+                        record_df = cluster_timestamps(record_df)
+                        self.save_results(record_df, output_path, meta_cmp["name"])
                     break
         if not vconf.QUIET: signals.do_log(f'====All done====')
         return record_df

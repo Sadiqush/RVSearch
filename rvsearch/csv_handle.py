@@ -66,25 +66,30 @@ def _check_and_rename(file_name, add=0) -> str:
 def record_similarity(record_df, timestamps, urls, names, channels):
     """When you find a similar video, save its information to a dataframe then give it back."""
     # If you want to dynamically save .csv, init before recording
-    signals.do_log(f'Found {len(timestamps[0])} similar frames')
-    for thread_res in timestamps:
-        for stamp in thread_res:
-            # TODO: Sum near timestamps together
-            m1, s1 = stamp[0][0], stamp[0][1]
-            m2, s2 = stamp[1][0], stamp[1][1]
-            score = stamp[2]  # Not used, but can be
+    if timestamps:
+        signals.do_log(f'Found {len(timestamps[0])} similar frames')
+        for thread_res in timestamps:
+            for stamp in thread_res:
+                # TODO: Sum near timestamps together
+                m1, s1 = stamp[0][0], stamp[0][1]
+                m2, s2 = stamp[1][0], stamp[1][1]
+                score = stamp[2]  # Not used, but can be
 
-            info = {'Cmpl_url': f'{urls[0]}',
-                    'Cmp_name': names[0],
-                    'Cmp_chnl': channels[0],
-                    'Source_url': f'{urls[1]}',
-                    'Source_name': names[1],
-                    'Source_chnl': channels[1],
-                    'Cmp_TimeStamp': fix_time(f'{int(m1)}:{int(s1)}'),
-                    'Source_TimeStamp': fix_time(f'{int(m2)}:{int(s2)}')}
-            if vconf.VERBOSE: signals.do_log(str(info))
-            record_df = record_df.append(info, ignore_index=True)
-    return record_df
+                info = {'Cmpl_url': f'{urls[0]}',
+                        'Cmp_name': names[0],
+                        'Cmp_chnl': channels[0],
+                        'Source_url': f'{urls[1]}',
+                        'Source_name': names[1],
+                        'Source_chnl': channels[1],
+                        'Cmp_TimeStamp': fix_time(f'{int(m1)}:{int(s1)}'),
+                        'Source_TimeStamp': fix_time(f'{int(m2)}:{int(s2)}')}
+                if vconf.VERBOSE: signals.do_log(str(info))
+                record_df = record_df.append(info, ignore_index=True)
+                success = True
+    else:
+        signals.do_log(f'Found no similar frames')
+        success = False
+    return record_df, success
 
 
 def save_csv(df: pd.DataFrame, csv_name="results"):
