@@ -142,8 +142,9 @@ def make_time_ranges(df):
             start = includes[0]
             end = now.time().strftime("%M:%S")
             # print('adding ', end, ' for end')
-            time_ranges.append(start) if start == end else time_ranges.append(f'{start}-{end}')
-            range_start.append(start)
+            if start != end:
+                time_ranges.append(f'{start}-{end}')
+                range_start.append(start)
             includes = []
     return range_start, time_ranges
 
