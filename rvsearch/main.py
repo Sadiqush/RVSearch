@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+import youtube_dl
+
 from rvsearch.video_utils import Video
 from rvsearch.csv_handle import \
     (read_csv, save_csv, record_similarity,
@@ -50,11 +52,20 @@ class CoreProcess:
             com_url, source_list = read_csv(csv)
 
             # Downloading
-            cmp_file = self.downloader.get_video(com_url[0])
+            try:
+                cmp_file = self.downloader.get_video(com_url[0])
+            except youtube_dl.utils.DownloadError:
+                signals.do_log('Compilation video is not available.')
+                return {}
+
             for source_url in source_list:
                 while signals.working:
                     # Downloading
-                    src_file = self.downloader.get_video(source_url)
+                    try:
+                        src_file = self.downloader.get_video(source_url)
+                    except:
+                        signals.do_log('This video is not available. skipping...')
+                        break
 
                     # Getting things ready
                     if not vconf.QUIET: signals.do_log('Getting ready to start comparison process')
